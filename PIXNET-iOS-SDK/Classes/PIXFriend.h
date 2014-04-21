@@ -26,4 +26,15 @@
  */
 - (void)getFriendGroupCompletion:(PIXHandlerCompletion)completion;
 
+- (void)createFriendGroupWithName:(NSString *)groupName
+                       Completion:(PIXHandlerCompletion)completion;
+
+- (void)updateFriendGroupWithID:(NSString *)groupID
+                        newName:(NSString *)newName
+                     completion:(PIXHandlerCompletion)completion;
+
+- (void)deleteFriendGroupWithID:(NSString *)groupID
+                     completion:(PIXHandlerCompletion)completion;
+
+
 @end
