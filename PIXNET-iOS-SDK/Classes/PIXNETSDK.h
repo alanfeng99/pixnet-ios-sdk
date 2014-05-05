@@ -229,7 +229,7 @@
  *  @param userName   指定要回傳的使用者資訊，如輸入 nil 則搜尋全站
  *  @param page       頁數, 預設為 1, 不需要則輸入 nil
  *  @param perPage    每頁幾筆, 預設為 100, 不需要則輸入 nil
- *  @param completion succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 error 裡
  */
 - (void)getblogSearchArticleWithKeyword:(NSString *)keyword
                                userName:(NSString *)userName
@@ -238,6 +238,17 @@
                              completion:(PIXHandlerCompletion)completion;
 
 #pragma mark Article method need access token
+/**
+ *  簡易新增部落格個人文章（當不需額外設定文章狀態時適用） http://emma.pixnet.cc/blog/articles
+ *
+ *  @param title      *文章標題
+ *  @param body       *文章內容
+ *  @param completion succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 error 裡
+ */
+- (void)createBlogArticleSimpleWithTitle:(NSString *)title
+                                    body:(NSString *)body
+                              completion:(PIXHandlerCompletion)completion;
+
 /**
  *  新增部落格個人文章 http://emma.pixnet.cc/blog/articles
  *
@@ -253,7 +264,7 @@
  *  @param passwd        當 status 被設定為 PIXArticleStatusPassword 時需要輸入這個參數以設定為此文章的密碼
  *  @param passwdHint    當 status 被設定為 PIXArticleStatusPassword 時需要輸入這個參數以設定為此文章的密碼提示
  *  @param friendGroupID 當 status 被設定為 PIXArticleStatusFriend 時可以輸入這個參數以設定此文章可閱讀的好友群組, 預設不輸入代表所有好友
- *  @param completion    succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion    succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 error 裡
  */
 - (void)createBlogArticleWithTitle:(NSString *)title
                               body:(NSString *)body
@@ -268,6 +279,22 @@
                       passwordHine:(NSString *)passwdHint
                      friendGroupID:(NSString *)friendGroupID
                         completion:(PIXHandlerCompletion)completion;
+
+
+/**
+ *  簡易修改部落格個人文章（當不需額外設定文章狀態時適用） http://emma.pixnet.cc/blog/articles/:id
+ *
+ *  @param articleID  *要修改的文章ID
+ *  @param title      *修改後的文章標題
+ *  @param body       *修改後的文章內容
+ *  @param completion succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 error 裡
+ */
+- (void)updateBlogArticleSimpleWithArticleID:(NSString *)articleID
+                                       title:(NSString *)title
+                                        body:(NSString *)body
+                                  completion:(PIXHandlerCompletion)completion;
+
+
 /**
  *  修改部落格個人文章 http://emma.pixnet.cc/blog/articles/:id
  *
@@ -284,7 +311,7 @@
  *  @param passwd        當 status 被設定為 PIXArticleStatusPassword 時需要輸入這個參數以設定為此文章的密碼
  *  @param passwdHint    當 status 被設定為 PIXArticleStatusPassword 時需要輸入這個參數以設定為此文章的密碼提示
  *  @param friendGroupID 當 status 被設定為 PIXArticleStatusFriend 時可以輸入這個參數以設定此文章可閱讀的好友群組, 預設不輸入代表所有好友
- *  @param completion    succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion    succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 error 裡
  */
 - (void)updateBlogArticleWithArticleID:(NSString *)articleID
                                  title:(NSString *)title

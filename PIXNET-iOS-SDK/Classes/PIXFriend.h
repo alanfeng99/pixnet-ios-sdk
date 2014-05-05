@@ -36,5 +36,29 @@
 - (void)deleteFriendGroupWithID:(NSString *)groupID
                      completion:(PIXHandlerCompletion)completion;
 
+#pragma mark - FriendShips
+#pragma mark Method Need Auth
+
+- (void)getFriendshipsWithCursor:(NSString *)cursor
+                      cursorName:(NSString *)cursorName
+                 isBidirectional:(BOOL)bidirectional
+                      completion:(PIXHandlerCompletion)completion;
+
+- (void)addFriendshipWithUserName:(NSString *)userName
+                       completion:(PIXHandlerCompletion)completion;
+
+- (void)appendFriendshipIntoGroupID:(NSString *)groupID
+                         friendName:(NSString *)name
+                         completion:(PIXHandlerCompletion)completion;
+
+- (void)deleteFriendshipFromGroupID:(NSString *)groupID
+                         friendName:(NSString *)name
+                         completion:(PIXHandlerCompletion)completion;
+
+- (void)deleteFriendshipWithFriendName:(NSString *)friendName
+                            completion:(PIXHandlerCompletion)completion;
+
+
+
 
 @end
