@@ -121,7 +121,7 @@ typedef NS_ENUM(NSInteger, PIXVideoThumbType) {
 
 #pragma mark SetFolders
 /**
- *  列出相本列表 http://developer.pixnet.pro/#!/doc/pixnetApi/albumSetfolders
+ *  列出相本及資料夾列表 http://developer.pixnet.pro/#!/doc/pixnetApi/albumSetfolders
  *
  *  @param userName   相本擁有者,必要參數
  *  @param trimUser   是否每篇文章都要回傳作者資訊, 如果設定為 YES, 則就不回傳. 預設是 NO
@@ -140,7 +140,7 @@ typedef NS_ENUM(NSInteger, PIXVideoThumbType) {
 
 #pragma mark Sets
 /**
- *  列出個人所有相本 http://developer.pixnet.pro/#!/doc/pixnetApi/albumSets
+ *  列出個人所有相本(不含資料夾) http://developer.pixnet.pro/#!/doc/pixnetApi/albumSets
  *
  *  @param userName   相本擁有者,必要參數
  *  @param parentID   可以藉此指定拿到特定相簿資料夾底下的相簿
@@ -254,7 +254,20 @@ typedef NS_ENUM(NSInteger, PIXVideoThumbType) {
  *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 errorMessage 裡
  */
 -(void)createElementCommentWithElementID:(NSString *)elementID body:(NSString *)body password:(NSString *)password completion:(PIXHandlerCompletion)completion;
-
+/**
+ *  將相簿上某則留言註記為廣告 http://developer.pixnet.pro/#!/doc/pixnetApi/albumSetCommentsMarkSpam
+ *
+ *  @param commentId  該則留言的 id
+ *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 errorMessage 裡
+ */
+-(void)markAlbumSetCommentAsSpamWithCommentID:(NSString *)commentId completion:(PIXHandlerCompletion)completion;
+/**
+ *  將相簿上某則留言註記為非廣告 http://developer.pixnet.pro/#!/doc/pixnetApi/albumSetCommentsMarkHam
+ *
+ *  @param commentId  該則留言的 id
+ *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 errorMessage 裡
+ */
+-(void)markAlbumSetCommentAsHamWithCommentID:(NSString *)commentId completion:(PIXHandlerCompletion)completion;
 /**
  *  附近的相本 http://developer.pixnet.pro/#!/doc/pixnetApi/albumSetsNearby
  *
@@ -296,7 +309,7 @@ typedef NS_ENUM(NSInteger, PIXVideoThumbType) {
 /**
  *  修改資料夾裡的相簿排序 http://developer.pixnet.pro/#!/doc/pixnetApi/albumSetsPosition
  *
- *  @param parentId   屬於哪一個相簿資料夾
+ *  @param parentId   屬於哪一個相簿資料夾,必要欄位
  *  @param ids        相簿id, array 裡的值為 NSString, id 的順序即為相簿的新順序
  *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 errorMessage 裡
  */
@@ -414,14 +427,14 @@ typedef NS_ENUM(NSInteger, PIXVideoThumbType) {
  */
 -(void)getCommentWithUserName:(NSString *)userName commentID:(NSString *)commentId completion:(PIXHandlerCompletion)completion;
 /**
- *  將某則留言標記為廣告留言 http://developer.pixnet.pro/#!/doc/pixnetApi/albumCommentsMarkSpam
+ *  將某則相片裡的留言標記為廣告留言 http://developer.pixnet.pro/#!/doc/pixnetApi/albumCommentsMarkSpam
  *
  *  @param commentId  留言ID, 必要參數
  *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 errorMessage 裡
  */
 -(void)markCommentAsSpamWithCommentID:(NSString *)commentId completion:(PIXHandlerCompletion)completion;
 /**
- *  將某則留言標記為非廣告留言 http://developer.pixnet.pro/#!/doc/pixnetApi/albumCommentsMarkHam
+ *  將某則相片裡留言標記為非廣告留言 http://developer.pixnet.pro/#!/doc/pixnetApi/albumCommentsMarkHam
  *
  *  @param commentId  留言ID, 必要參數
  *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 errorMessage 裡
@@ -460,9 +473,26 @@ typedef NS_ENUM(NSInteger, PIXVideoThumbType) {
  *
  *  @param elementId   要加人臉標記的相片 ID，必要欄位
  *  @param beTagedUser 要被標記的使用者帳號，被標記者必須設定標記者為好友。必要欄位
- *  @param tagFrame    被標記的影像範圍，必要欄位
+ *  @param tagFrame    被標記的影像範圍，當沒有使用 recommendId 時，這是必要欄位
  *  @param recommendId 如果在 -getCommentWithUserName:commentID:completion: 有系統推薦標記的使用者，可在這裡使用
  *  @param completion  succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 errorMessage 裡
  */
 -(void)tagFriendWithElementID:(NSString *)elementId beTaggedUser:(NSString *)beTaggedUser tagFrame:(CGRect)tagFrame recommendID:(NSString *)recommendId completion:(PIXHandlerCompletion)completion;
+/**
+ *  更新人臉標記 http://developer.pixnet.pro/#!/doc/pixnetApi/albumFacesFaceid
+ *
+ *  @param faceId      要被改變的人臉 id，必要欄位
+ *  @param elementId   相片或影像的 id，必要欄位
+ *  @param beTaggedUser    要更新標記的使用者帳號。被標記者必須設定標記者為好友。必要欄位。
+ *  @param newTagFrame 被標記的影像範圍，必要欄位
+ *  @param completion  succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 errorMessage 裡
+ */
+-(void)updateTagedFaceWithFaceId:(NSString *)faceId elementId:(NSString *)elementId beTaggedUser:(NSString *)beTaggedUser newTagFrame:(CGRect)newTagFrame completion:(PIXHandlerCompletion)completion;
+/**
+ *  刪除人臉標記 http://developer.pixnet.pro/#!/doc/pixnetApi/albumFacesDelete
+ *
+ *  @param faceId     要被刪除的人臉 id，必要欄位
+ *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 errorMessage 裡
+ */
+-(void)deleteTagWithFaceId:(NSString *)faceId completion:(PIXHandlerCompletion)completion;
 @end

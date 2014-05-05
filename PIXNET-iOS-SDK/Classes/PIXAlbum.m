@@ -47,6 +47,7 @@ static const NSString *kSetsNearbyPath = @"album/sets/nearby";
         completion(NO, nil,[NSError PIXErrorWithParameterName:@"userName"]);
         return;
     }
+
     NSMutableDictionary *params = [NSMutableDictionary new];
     params[@"user"] = userName;
     params[@"trim_user"] = @(trimUser);
@@ -225,22 +226,34 @@ static const NSString *kSetsNearbyPath = @"album/sets/nearby";
         }];
     }
 }
+-(void)markAlbumSetCommentAsSpamWithCommentID:(NSString *)commentId completion:(PIXHandlerCompletion)completion{
+    [self markCommentAsSpamOrHamWithCommentID:commentId isSpam:NO isCommentInSet:YES completion:completion];
+}
+-(void)markAlbumSetCommentAsHamWithCommentID:(NSString *)commentId completion:(PIXHandlerCompletion)completion{
+    [self markCommentAsSpamOrHamWithCommentID:commentId isSpam:NO isCommentInSet:YES completion:completion];
+}
 -(void)markCommentAsSpamWithCommentID:(NSString *)commentId completion:(PIXHandlerCompletion)completion{
-    [self markCommentAsSpamOrHamWithCommentID:commentId isSpam:YES completion:completion];
+    [self markCommentAsSpamOrHamWithCommentID:commentId isSpam:YES isCommentInSet:NO completion:completion];
 }
 -(void)markCommentAsHamWithCommentID:(NSString *)commentId completion:(PIXHandlerCompletion)completion{
-    [self markCommentAsSpamOrHamWithCommentID:commentId isSpam:NO completion:completion];
+    [self markCommentAsSpamOrHamWithCommentID:commentId isSpam:NO isCommentInSet:NO completion:completion];
 }
--(void)markCommentAsSpamOrHamWithCommentID:(NSString *)commentId isSpam:(BOOL)isSpam completion:(PIXHandlerCompletion)completion{
+-(void)markCommentAsSpamOrHamWithCommentID:(NSString *)commentId isSpam:(BOOL)isSpam isCommentInSet:(BOOL)isCommentInSet completion:(PIXHandlerCompletion)completion{
     if (commentId==nil || commentId.length==0) {
         completion(NO, nil, [NSError PIXErrorWithParameterName:@"commentId 參數有誤"]);
         return;
     }
+    NSString *pathPrefix = nil;
+    if (isCommentInSet) {
+        pathPrefix = @"album/set_comments/";
+    } else {
+        pathPrefix = @"album/comments/";
+    }
     NSString *path = nil;
     if (isSpam) {
-        path = [NSString stringWithFormat:@"album/comments/%@/mark_spam", commentId];
+        path = [NSString stringWithFormat:@"%@%@/mark_spam", pathPrefix, commentId];
     } else {
-        path = [NSString stringWithFormat:@"album/comments/%@/mark_ham", commentId];
+        path = [NSString stringWithFormat:@"%@%@/mark_ham", pathPrefix, commentId];
     }
     [[PIXAPIHandler new] callAPI:path httpMethod:@"POST" shouldAuth:YES parameters:nil requestCompletion:^(BOOL succeed, id result, NSError *errorMessage) {
         if (succeed) {
@@ -359,10 +372,16 @@ static const NSString *kSetsNearbyPath = @"album/sets/nearby";
     if (password != nil) {
         params[@"password"] = password;
     }
+    NSString *path = nil;
+    if (isSetId) {
+        path = @"album/set_comments";
+    } else {
+        path = @"album/comments";
+    }
     if (shouldAuth) {
         
     } else {
-        [[PIXAPIHandler new] callAPI:@"album/comments" parameters:params requestCompletion:^(BOOL succeed, id result, NSError *errorMessage) {
+        [[PIXAPIHandler new] callAPI:path parameters:params requestCompletion:^(BOOL succeed, id result, NSError *errorMessage) {
             if (succeed) {
                 [self succeedHandleWithData:result completion:completion];
             } else {
@@ -759,17 +778,19 @@ static const NSString *kSetsNearbyPath = @"album/sets/nearby";
         completion(NO, nil, [NSError PIXErrorWithParameterName:@"beTaggedUser 參數有誤"]);
         return;
     }
-    if (CGRectIsNull(tagFrame)) {
+    if (CGRectIsNull(tagFrame) && recommendId==nil) {
         completion(NO, nil, [NSError PIXErrorWithParameterName:@"tagFrame 參數有誤"]);
         return;
     }
     NSMutableDictionary *params = [NSMutableDictionary new];
     params[@"user"] = beTaggedUser;
     params[@"element_id"] = elementId;
-    params[@"x"] = [NSString stringWithFormat:@"%g", tagFrame.origin.x];
-    params[@"y"] = [NSString stringWithFormat:@"%g", tagFrame.origin.y];
-    params[@"w"] = [NSString stringWithFormat:@"%g", tagFrame.size.width];
-    params[@"h"] = [NSString stringWithFormat:@"%g", tagFrame.size.height];
+    if (!CGRectIsNull(tagFrame)) {
+        params[@"x"] = [NSString stringWithFormat:@"%g", tagFrame.origin.x];
+        params[@"y"] = [NSString stringWithFormat:@"%g", tagFrame.origin.y];
+        params[@"w"] = [NSString stringWithFormat:@"%g", tagFrame.size.width];
+        params[@"h"] = [NSString stringWithFormat:@"%g", tagFrame.size.height];
+    }
     if (recommendId) {
         params[@"recommend_id"] = recommendId;
     }
@@ -782,5 +803,52 @@ static const NSString *kSetsNearbyPath = @"album/sets/nearby";
     }];
     
 }
+-(void)updateTagedFaceWithFaceId:(NSString *)faceId elementId:(NSString *)elementId beTaggedUser:(NSString *)beTaggedUser newTagFrame:(CGRect)newTagFrame completion:(PIXHandlerCompletion)completion{
+    if (faceId==nil ||faceId.length==0) {
+        completion(NO, nil, [NSError PIXErrorWithParameterName:@"faceId 參數有誤"]);
+        return;
+    }
+    if (elementId==nil || elementId.length==0) {
+        completion(NO, nil, [NSError PIXErrorWithParameterName:@"elementId 參數有誤"]);
+        return;
+    }
+    if (beTaggedUser==nil || beTaggedUser.length==0) {
+        completion(NO, nil, [NSError PIXErrorWithParameterName:@"beTaggedUser 參數有誤"]);
+        return;
+    }
+    if (CGRectIsNull(newTagFrame)) {
+        completion(NO, nil, [NSError PIXErrorWithParameterName:@"newTagFrame 參數有誤"]);
+        return;
+    }
+    NSString *path = [NSString stringWithFormat:@"album/faces/%@", faceId];
 
+    NSDictionary *params = @{@"user":beTaggedUser,
+                             @"element_id":elementId,
+                             @"x":[NSString stringWithFormat:@"%g", newTagFrame.origin.x],
+                             @"y":[NSString stringWithFormat:@"%g", newTagFrame.origin.y],
+                             @"w":[NSString stringWithFormat:@"%g", newTagFrame.size.width],
+                             @"h":[NSString stringWithFormat:@"%g", newTagFrame.size.height]};
+    [[PIXAPIHandler new] callAPI:path httpMethod:@"POST" shouldAuth:YES uploadData:nil parameters:params requestCompletion:^(BOOL succeed, id result, NSError *error) {
+        if (succeed) {
+            [self succeedHandleWithData:result completion:completion];
+        } else {
+            completion(NO, nil, error);
+        }
+    }];
+}
+-(void)deleteTagWithFaceId:(NSString *)faceId completion:(PIXHandlerCompletion)completion{
+    if (faceId==nil || faceId.length==0) {
+        completion(NO, nil, [NSError PIXErrorWithParameterName:@"faceId 參數有誤"]);
+        return;
+    }
+    NSString *path = [NSString stringWithFormat:@"album/faces/%@", faceId];
+    
+    [[PIXAPIHandler new] callAPI:path httpMethod:@"POST" shouldAuth:YES parameters:@{@"_method":@"delete"} requestCompletion:^(BOOL succeed, id result, NSError *error) {
+        if (succeed) {
+            [self succeedHandleWithData:result completion:completion];
+        } else {
+            completion(NO, nil, error);
+        }
+    }];
+}
 @end
