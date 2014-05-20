@@ -28,7 +28,7 @@
  *
  *  @param userName   使用者名稱(帳號)，必要參數
  *  @param password   使用者密碼，必要參數
- *  @param completion succeed == YES 時，回傳 token; succeed == NO 時，則會回傳 errorMessage
+ *  @param completion succeed == YES 時，回傳 token; succeed == NO 時，則會回傳 error
  */
 +(void)authByXauthWithUserName:(NSString *)userName userPassword:(NSString *)password requestCompletion:(PIXHandlerCompletion)completion;
 /**
@@ -49,7 +49,7 @@
  *  讀取 User 公開資訊 http://developer.pixnet.pro/#!/doc/pixnetApi/users
  *
  *  @param userName   指定要回傳的使用者資訊,必要參數
- *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 NSError 物件裡
  */
 -(void)getUserWithUserName:(NSString *)userName completion:(PIXHandlerCompletion)completion;
 
@@ -57,7 +57,7 @@
  *  讀取 User 私人資訊 http://developer.pixnet.pro/#!/doc/pixnetApi/account
  *
  *  @needAuth
- *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 NSError 物件裡
  */
 -(void)getAccountWithCompletion:(PIXHandlerCompletion)completion;
 
@@ -68,7 +68,7 @@
  *  列出部落格資訊 http://developer.pixnet.pro/#!/doc/pixnetApi/blog
  *
  *  @param userName   *指定要回傳的使用者資訊,必要參數
- *  @param completion succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 NSError 物件裡
  */
 - (void)getBlogInformationWithUserName:(NSString *)userName
                             completion:(PIXHandlerCompletion)completion;
@@ -80,7 +80,7 @@
  *
  *  @param userName   *指定要回傳的使用者資訊
  *  @param passwd     如果指定使用者的 Blog 被密碼保護，則需要指定這個參數以通過授權，沒有則輸入 nil
- *  @param completion succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 NSError 物件裡
  */
 - (void)getBlogCategoriesWithUserName:(NSString *)userName
                              password:(NSString *)passwd
@@ -94,7 +94,7 @@
  *  @param type        *請輸入分類 PIXBlogCategoryType 型別，有 Folder 及 Category 可選
  *  @param description 分類說明
  *  @param cateID      *對應的全站文章類別 id. 當 type 為 category 為必須參數
- *  @param completion  succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion  succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 NSError 物件裡
  */
 - (void)createBlogCategoriesWithName:(NSString *)name
                                 type:(PIXBlogCategoryType)type
@@ -108,7 +108,7 @@
  *  @param newName      *修改後的顯示名稱，必要參數
  *  @param type         要修改的類型是 Category / Folder
  *  @param description  修改後的分類說明
- *  @param completion   succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion   succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 NSError 物件裡
  */
 - (void)updateBlogCategoryFromID:(NSString *)categoryID
                            newName:(NSString *)newName
@@ -120,7 +120,7 @@
  *
  *
  *  @param categoriesID *要刪除的 Category ID
- *  @param completion   succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion   succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 NSError 物件裡
  */
 - (void)deleteBlogCategoriesByID:(NSString *)categoriesID
                       completion:(PIXHandlerCompletion)completion;
@@ -129,7 +129,7 @@
  *  刪除部落格個人資料夾 http://emma.pixnet.cc/blog/categories/:id
  *
  *  @param categoriesID *要刪除的 Folder ID
- *  @param completion   succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion   succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 NSError 物件裡
  */
 - (void)deleteBlogFolderByID:(NSString *)folderID
                   completion:(PIXHandlerCompletion)completion;
@@ -139,7 +139,7 @@
  *  修改部落格分類排序 http://emma.pixnet.cc/blog/categories/position
  *
  *  @param categoriesIDArray *輸入以部落格分類ID組成已排序好的 Array，分類將會已陣列順序重新排序。放在越前面的表示圖片的順序越優先。不過在排序上分類資料夾的排序要優先於分類，所以對分類資料夾的排序指定只會影響資料夾群本身
- *  @param completion        succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion        succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 NSError 物件裡
  */
 - (void)sortBlogCategoriesTo:(NSArray *)categoriesIDArray
                   completion:(PIXHandlerCompletion)completion;
@@ -169,7 +169,7 @@
  *  @param articleID     ＊指定要回傳的文章ID
  *  @param blogPasswd    如果指定使用者的 Blog 被密碼保護，則需要指定這個參數以通過授權，沒有則輸入 nil
  *  @param articlePasswd 如果指定使用者的文章被密碼保護，則需要指定這個參數以通過授權，沒有則輸入 nil
- *  @param completion    succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion    succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 NSError 物件裡
  */
 - (void)getBlogSingleArticleWithUserName:(NSString *)userName
                                articleID:(NSString *)articleID
@@ -183,7 +183,7 @@
  *  @param articleID  ＊指定要回傳的文章ID
  *  @param userName   ＊指定要回傳的使用者
  *  @param limit      限制回傳文章的筆數，預設值為1，最大值為10, 不設定則輸入 nil
- *  @param completion succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 NSError 物件裡
  */
 - (void)getBlogRelatedArticleByArticleID:(NSString *)articleID
                                 userName:(NSString *)userName
@@ -199,7 +199,7 @@
  *  @param articlePassword 如果指定使用者的文章被密碼保護，則需要指定這個參數以通過授權，沒有則輸入 nil
  *  @param page            頁數, 預設為 1, 不需要則輸入 nil
  *  @param commentPerPage  每頁幾筆, 預設為 100, 不需要則輸入 nil
- *  @param completion      succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion      succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 NSError 物件裡
  */
 - (void)getBlogArticleCommentsWithUserName:(NSString *)userName
                                  articleID:(NSString *)articleID
@@ -213,7 +213,7 @@
  *
  *  @param userName     *指定要回傳的使用者資訊
  *  @param blogPassword 如果指定使用者的 Blog 被密碼保護，則需要指定這個參數以通過授權
- *  @param completion   succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion   succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 NSError 物件裡
  */
 - (void)getBlogLatestArticleWithUserName:(NSString *)userName
                             blogPassword:(NSString *)blogPassword
@@ -224,7 +224,7 @@
  *
  *  @param userName   *指定要回傳的使用者資訊
  *  @param passwd     如果指定使用者的 Blog 被密碼保護，則需要指定這個參數以通過授權，沒有則輸入 nil
- *  @param completion succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 NSError 物件裡
  */
 - (void)getBlogHotArticleWithUserName:(NSString *)userName
                              password:(NSString *)passwd
@@ -237,7 +237,7 @@
  *  @param userName   指定要回傳的使用者資訊，如輸入 nil 則搜尋全站
  *  @param page       頁數, 預設為 1, 不需要則輸入 nil
  *  @param perPage    每頁幾筆, 預設為 100, 不需要則輸入 nil
- *  @param completion succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 error 裡
+ *  @param completion succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 NSError 物件裡
  */
 - (void)getblogSearchArticleWithKeyword:(NSString *)keyword
                                userName:(NSString *)userName
@@ -247,69 +247,36 @@
 
 #pragma mark Article method need access token
 /**
- *  簡易新增部落格個人文章（當不需額外設定文章狀態時適用） http://emma.pixnet.cc/blog/articles
+ *  新增部落格個人文章（需認證）  http://developer.pixnet.pro/#!/doc/pixnetApi/blogArticlesCreate
  *
- *  @param title      *文章標題
- *  @param body       *文章內容
- *  @param completion succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 error 裡
- */
-- (void)createBlogArticleSimpleWithTitle:(NSString *)title
-                                    body:(NSString *)body
-                              completion:(PIXHandlerCompletion)completion;
-
-/**
- *  新增部落格個人文章 http://emma.pixnet.cc/blog/articles
- *
- *  @param title         *文章標題
- *  @param body          *文章內容
- *  @param status        文章狀態，使用 PIXArticleStatus 型別
- *  @param date          公開時間，這個表示文章的發表時間，預設為現在時間
- *  @param cateID        全站分類，使用 PIXSiteBlogCategory 型別
- *  @param commentPerm   可留言權限，使用 PIXArticleCommentPerm 型別
- *  @param commentHidden 預設留言狀態， Yes 為強制隱藏 NO 為顯示(公開)，預設為 NO 公開(顯示)
- *  @param tagArray      文章標籤
- *  @param thumburl      文章縮圖網址, 會影響 oEmbed 與 SNS (Twitter, Facebook, Plurk …) 抓到的縮圖
- *  @param passwd        當 status 被設定為 PIXArticleStatusPassword 時需要輸入這個參數以設定為此文章的密碼
- *  @param passwdHint    當 status 被設定為 PIXArticleStatusPassword 時需要輸入這個參數以設定為此文章的密碼提示
- *  @param friendGroupID 當 status 被設定為 PIXArticleStatusFriend 時可以輸入這個參數以設定此文章可閱讀的好友群組, 預設不輸入代表所有好友
- *  @param completion    succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 error 裡
+ *  @param title          ＊文章標題
+ *  @param body           ＊文章內容
+ *  @param completion     succeed = YES 時 result 可以用，succeed = NO 時 result 會是 nil，錯誤原因會在 NSError 物件中
  */
 - (void)createBlogArticleWithTitle:(NSString *)title
                               body:(NSString *)body
                         completion:(PIXHandlerCompletion)completion;
-
-
 /**
- *  簡易修改部落格個人文章（當不需額外設定文章狀態時適用） http://emma.pixnet.cc/blog/articles/:id
+ *  修改部落格個人文章(需認證) http://developer.pixnet.pro/#!/doc/pixnetApi/blogArticlesUpdate
  *
- *  @param articleID  *要修改的文章ID
- *  @param title      *修改後的文章標題
- *  @param body       *修改後的文章內容
- *  @param completion succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 error 裡
- */
-- (void)updateBlogArticleSimpleWithArticleID:(NSString *)articleID
-                                       title:(NSString *)title
-                                        body:(NSString *)body
-                                  completion:(PIXHandlerCompletion)completion;
-
-
-/**
- *  修改部落格個人文章 http://emma.pixnet.cc/blog/articles/:id
- *
- *  @param articleID     *要修改的文章 ID
- *  @param title         *修改後的文章標題
- *  @param body          *修改後的文章內容
- *  @param status        文章狀態，使用 PIXArticleStatus 型別
- *  @param date          公開時間，這個表示文章的發表時間，預設為現在時間
- *  @param cateID        全站分類，使用 PIXSiteBlogCategory 型別
- *  @param commentPerm   可留言權限，使用 PIXArticleCommentPerm 型別
- *  @param commentHidden 預設留言狀態， Yes 為強制隱藏 NO 為顯示(公開)，預設為 NO 公開(顯示)
- *  @param tagArray      文章標籤
- *  @param thumburl      文章縮圖網址, 會影響 oEmbed 與 SNS (Twitter, Facebook, Plurk …) 抓到的縮圖
- *  @param passwd        當 status 被設定為 PIXArticleStatusPassword 時需要輸入這個參數以設定為此文章的密碼
- *  @param passwdHint    當 status 被設定為 PIXArticleStatusPassword 時需要輸入這個參數以設定為此文章的密碼提示
- *  @param friendGroupID 當 status 被設定為 PIXArticleStatusFriend 時可以輸入這個參數以設定此文章可閱讀的好友群組, 預設不輸入代表所有好友
- *  @param completion    succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 error 裡
+ *  @param articleID      要修改的文章的 id, 必要欄位
+ *  @param title          文章標題
+ *  @param body           文章內文
+ *  @param status         文章狀態
+ *  @param date           文章的發表時間
+ *  @param userCategoryId 使用者自訂的類別 id。使用者自訂的類別，可透過 -(void)getBlogCategoriesWithUserName:password:completion: 取得
+ *  @param cateID         全站分類 id
+ *  @param commentPerm    全站分類的該類別 id，全站的部落格類別，可透過 -(void)getBlogCategoriesListIncludeGroups:thumbs:completion: 取得
+ *  @param commentHidden  是否將留言公開
+ *  @param tagArray       標籤
+ *  @param thumburl       文章縮圖網址, 會影響 oEmbed 與 SNS (Twitter, Facebook, Plurk …) 抓到的縮圖
+ *  @param trackback      發送引用通知, 可以輸入複數網站
+ *  @param passwd         當 status 被設定為 PIXArticleStatusPassword 時需要輸入這個參數以設定為此文章的密碼
+ *  @param passwdHint     當 status 被設定為 PIXArticleStatusPassword 時需要輸入這個參數以設定為此文章的密碼提示
+ *  @param friendGroupID  當 status 被設定為 PIXArticleStatusFriend 時可以輸入這個參數以設定此文章可閱讀的好友群組
+ *  @param notifyTwitter  是否動態發送至 Twitter. 必須先有同步關係才能發送
+ *  @param notifyFacebook 動態發送至 Facebook. 必須先有同步關係才能發送
+ *  @param completion     succeed = YES 時 result 可以用，succeed = NO 時 result 會是 nil，錯誤原因會在 NSError 物件中
  */
 - (void)updateBlogArticleWithArticleID:(NSString *)articleID
                                  title:(NSString *)title
@@ -334,7 +301,7 @@
  *  刪除部落格個人文章 http://emma.pixnet.cc/blog/articles/:id
  *
  *  @param articleID  *要刪除的文章 ID
- *  @param completion succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 NSError 物件裡
  */
 - (void)deleteBlogArticleByArticleID:(NSString *)articleID
                           completion:(PIXHandlerCompletion)completion;
@@ -351,7 +318,7 @@
  *  @param articleID  指定要回傳的留言文章
  *  @param page       頁數
  *  @param perPage    每頁幾筆
- *  @param completion succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 NSError 物件裡
  */
 - (void)getBlogCommentsWithUserName:(NSString *)userName
                           articleID:(NSString *)articleID
@@ -364,7 +331,7 @@
  *
  *  @param userName   *指定要回傳的使用者資訊
  *  @param commentID  *指定要回傳的留言ID
- *  @param completion succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 NSError 物件裡
  */
 - (void)getBlogSingleCommentWithUserName:(NSString *)userName
                               commmentID:(NSString *)commentID
@@ -375,7 +342,7 @@
  *  列出部落格最新留言 http://emma.pixnet.cc/blog/comments/latest
  *
  *  @param userName   ＊指定要回傳的使用者資訊
- *  @param completion succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 NSError 物件裡
  */
 - (void)getBlogLatestCommentWithUserName:(NSString *)userName
                               completion:(PIXHandlerCompletion)completion;
@@ -396,7 +363,7 @@
  *  @param email         留言者電子郵件
  *  @param blogPasswd    如果指定使用者的 Blog 被密碼保護，則需要指定這個參數以通過授權
  *  @param articlePasswd 如果指定使用者的文章被密碼保護，則需要指定這個參數以通過授權
- *  @param completion    succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion    succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 NSError 物件裡
  */
 - (void)createBlogCommentWithArticleID:(NSString *)articleID
                                   body:(NSString *)body
@@ -414,7 +381,7 @@
  *
  *  @param commentID  *要回覆/修改的留言 ID
  *  @param body       *留言內容/修改後的內容
- *  @param completion succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 NSError 物件裡
  */
 - (void)replyBlogCommentWithCommnetID:(NSString *)commentID
                                  body:(NSString *)body
@@ -425,7 +392,7 @@
  *
  *  @param commentID  *要公開/關閉的留言 ID
  *  @param isOpen     * YSE 為 公開， NO 為 關閉 該則留言
- *  @param completion succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 NSError 物件裡
  */
 - (void)updateBlogCommentOpenWithCommentID:(NSString *)commentID
                                     isOpen:(BOOL)isOpen
@@ -436,7 +403,7 @@
  *
  *  @param commentID  *要公開/關閉的留言 ID
  *  @param isSpam     * YSE 為設成廣告留言， NO 為設成非廣告留言
- *  @param completion succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 NSError 物件裡
  */
 - (void)updateBlogCommentSpamWithCommentID:(NSString *)commentID
                                     isSpam:(BOOL)isSpam
@@ -446,7 +413,7 @@
  *  刪除部落格留言 http://emma.pixnet.cc/blog/comments/:id
  *
  *  @param commentID  *要刪除的留言 ID
- *  @param completion succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 NSError 物件裡
  */
 - (void)deleteBlogCommentWithCommentID:(NSString *)commentID
                             completion:(PIXHandlerCompletion)completion;
@@ -459,7 +426,7 @@
  *
  *  @param group      當被設為 YES 或 true 時, 回傳資訊會以全站分類群組為分類，不需要則輸入 NO 或 false
  *  @param thumb      當被設為 YES 或 true 時, 回傳分類資訊會包含縮圖網址，不需要則輸入 NO 或 false
- *  @param completion succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 NSError 物件裡
  */
 - (void)getBlogCategoriesListIncludeGroups:(BOOL)group
                                     thumbs:(BOOL)thumb
@@ -473,7 +440,7 @@
  *
  *  @param isIncludeGroups 當被設為 YES 時, 回傳資訊會以全站分類群組為分類
  *  @param isIncludeThumbs 當被設為 YES 時, 回傳分類資訊會包含縮圖
- *  @param completion      succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion      succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 NSError 物件裡
  */
 -(void)getAlbumSiteCategoriesWithIsIncludeGroups:(BOOL)isIncludeGroups
                                  isIncludeThumbs:(BOOL)isIncludeThumbs
@@ -482,14 +449,14 @@
 /**
  *  列出相簿主圖及相片牆資訊 http://developer.pixnet.pro/#!/doc/pixnetApi/albumMain
  *
- *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 NSError 物件裡
  */
 -(void)getAlbumMainWithCompletion:(PIXHandlerCompletion)completion;
 #pragma mark config
 /**
  *  列出相簿個人設定 http://developer.pixnet.pro/#!/doc/pixnetApi/albumConfig
  *
- *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 NSError 物件裡
  */
 -(void)getAlbumConfigWithCompletion:(PIXHandlerCompletion)completion;
 #pragma mark SetFolders
@@ -498,7 +465,7 @@
  *
  *  @param userName   相本擁有者,必要參數
  *  @param page       頁數
- *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 NSError 物件裡
  */
 -(void)getAlbumSetsWithUserName:(NSString *)userName
                            page:(NSUInteger)page
@@ -508,7 +475,7 @@
  *  修改相簿首頁排序 http://developer.pixnet.pro/#!/doc/pixnetApi/albumSetfoldersPosition
  *
  *  @param ids        相簿id, array 裡的值為 NSString, id 的順序即為相簿的新順序
- *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 NSError 物件裡
  */
 -(void)sortSetFoldersWithFolderIDs:(NSArray *)ids completion:(PIXHandlerCompletion)completion;
 #pragma mark Sets
@@ -518,7 +485,7 @@
  *  @param userName   相本擁有者,必要參數
  *  @param parentID   可以藉此指定拿到特定相簿資料夾底下的相簿
  *  @param page       頁數
- *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 NSError 物件裡
  */
 -(void)getAlbumSetsWithUserName:(NSString *)userName
                        parentID:(NSString *)parentID
@@ -530,7 +497,7 @@
  *  @param userName   相本擁有者, 必要參數
  *  @param setId      指定要回傳的 set 的 ID, 必要參數
  *  @param page       頁數
- *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 NSError 物件裡
  */
 -(void)getAlbumSetWithUserName:(NSString *)userName
                          setID:(NSString *)setId
@@ -548,7 +515,7 @@
  *  @param passwordHint       相簿密碼提示(當 permission==PIXAlbumSetPermissionTypePassword 時為必要參數)
  *  @param friendGroupIds     好友群組ID，array 裡的值為 NSString instance(當 permission==PIXAlbumSetPermissionTypeGroup 時為必要參數)
  *  @param parentId           如果這個 parent_id 被指定, 則此相簿會放置在這個相簿資料夾底下(只能放在資料夾底下)
- *  @param completion         succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion         succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 NSError 物件裡
  */
 -(void)createAlbumSetWithTitle:(NSString *)setTitle
                    description:(NSString *)setDescription
@@ -577,7 +544,7 @@
  *  @param allowCommercialUse 是否允許商業使用
  *  @param allowDerivation    是否允許創作衍生著作
  *  @param parentId           如果這個 parent_id 被指定, 則此相簿會放置在這個相簿資料夾底下(只能放在資料夾底下)
- *  @param completion         succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion         succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 NSError 物件裡
  */
 -(void)updateAlbumSetWithSetID:(NSString *)setId
                       setTitle:(NSString *)setTitle
@@ -598,7 +565,7 @@
  *  刪除單一相簿 http://developer.pixnet.pro/#!/doc/pixnetApi/albumSetsDelete
  *
  *  @param setId      欲刪除的相簿的 ID
- *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 NSError 物件裡
  */
 -(void)deleteAlbumSetWithSetID:(NSString *)setId completion:(PIXHandlerCompletion)completion;
 /**
@@ -609,7 +576,7 @@
  *  @param elementType 指定要回傳的類別
  *  @param page        頁數
  *  @param password    相簿密碼，當使用者相簿設定為密碼相簿時使用
- *  @param completion  succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion  succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 NSError 物件裡
  */
 -(void)getAlbumSetElementsWithUserName:(NSString *)userName
                                  setID:(NSString *)setId
@@ -625,7 +592,7 @@
  *  @param setId      指定要回傳的留言所在的相簿 setID 與 elementID 只要指定其中一個即可, 未用到的參數請給0
  *  @param password   如果指定使用者的相簿被密碼保護，則需要指定這個參數以通過授權
  *  @param page       頁數
- *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 NSError 物件裡
  */
 -(void)getAlbumSetCommentsWithUserName:(NSString *)userName
                                  setID:(NSString *)setId
@@ -638,7 +605,7 @@
  *  @param setId      相簿 ID
  *  @param body       留言內容
  *  @param password   如果被留言的相本被密碼保護，則需要指定這個參數以通過授權
- *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 NSError 物件裡
  */
 -(void)createAlbumSetCommentWithSetID:(NSString *)setId
                                  body:(NSString *)body
@@ -648,14 +615,14 @@
  *  將相簿上某則留言註記為廣告 http://developer.pixnet.pro/#!/doc/pixnetApi/albumSetCommentsMarkSpam
  *
  *  @param commentId  該則留言的 id
- *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 NSError 物件裡
  */
 -(void)markAlbumSetCommentAsSpamWithCommentID:(NSString *)commentId completion:(PIXHandlerCompletion)completion;
 /**
  *  將相簿上某則留言註記為非廣告 http://developer.pixnet.pro/#!/doc/pixnetApi/albumSetCommentsMarkHam
  *
  *  @param commentId  該則留言的 id
- *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 NSError 物件裡
  */
 -(void)markAlbumSetCommentAsHamWithCommentID:(NSString *)commentId completion:(PIXHandlerCompletion)completion;
 
@@ -665,7 +632,7 @@
  *  @param elementID  相片 ID
  *  @param body       留言內容
  *  @param password   如果被留言的相本被密碼保護，則需要指定這個參數以通過授權
- *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 NSError 物件裡
  */
 -(void)createElementCommentWithElementID:(NSString *)elementID
                                     body:(NSString *)body
@@ -680,7 +647,7 @@
  *  @param distanceMin 回傳相簿所在地和指定的經緯度距離之最小值，單位為公尺。預設為 0 公尺，上限為 50000 公尺
  *  @param distanceMax 回傳相簿所在地和指定的經緯度距離之最大值，單位為公尺。預設為 0 公尺，上限為 50000 公尺
  *  @param page        頁數
- *  @param completion  succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion  succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 NSError 物件裡
  */
 -(void)getAlbumSetsNearbyWithUserName:(NSString *)userName
                              location:(CLLocationCoordinate2D)location
@@ -696,7 +663,7 @@
  *  @param userName   相本擁有者, 必要參數
  *  @param trimUser   是否每本相簿都要回傳使用者資訊，若設定為 YES 則不回傳
  *  @param page       頁數
- *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 NSError 物件裡
  */
 -(void)getAlbumFoldersWithUserName:(NSString *)userName
                           trimUser:(BOOL)trimUser
@@ -708,7 +675,7 @@
  *  @param userName   相本擁有者, 必要參數
  *  @param folderId   指定要回傳的 folder 資訊, 必要參數
  *  @param page       頁數
- *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 NSError 物件裡
  */
 -(void)getAlbumFolderWithUserName:(NSString *)userName
                          folderID:(NSString *)folderId
@@ -719,7 +686,7 @@
  *
  *  @param parentId   屬於哪一個相簿資料夾
  *  @param ids        相簿id, array 裡的值為 NSString, id 的順序即為相簿的新順序
- *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 NSError 物件裡
  */
 -(void)sortAlbumSetsWithParentID:(NSString *)parentId IDs:(NSArray *)ids completion:(PIXHandlerCompletion)completion;
 /**
@@ -727,7 +694,7 @@
  *
  *  @param folderTitle       資料夾標題
  *  @param folderDescription 資料夾描述
- *  @param completion        succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion        succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 NSError 物件裡
  */
 -(void)createAlbumFolderWithTitle:(NSString *)folderTitle description:(NSString *)folderDescription completion:(PIXHandlerCompletion)completion;
 /**
@@ -736,14 +703,14 @@
  *  @param folderId          資料夾 ID
  *  @param folderTitle       資料夾標題
  *  @param folderDescription 資料夾描述
- *  @param completion        succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion        succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 NSError 物件裡
  */
 -(void)updateAlbumFolderWithFolderID:(NSString *)folderId title:(NSString *)folderTitle description:(NSString *)folderDescription completion:(PIXHandlerCompletion)completion;
 /**
  *  刪除資料夾 http://developer.pixnet.pro/#!/doc/pixnetApi/albumFoldersDelete
  *
  *  @param folderId  資料夾 ID
- *  @param comletion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param comletion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 NSError 物件裡
  */
 -(void)deleteAlbumFolderWithFolderID:(NSString *)folderId completion:(PIXHandlerCompletion)completion;
 
@@ -758,7 +725,7 @@
  *  @param page        頁數
  *  @param withDetail  是否傳回詳細資訊，指定為 YES 時將傳回相片／影音完整資訊及所屬相簿資訊。
  *  @param type        指定要回傳的類別。
- *  @param completion  succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion  succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 NSError 物件裡
  */
 -(void)getElementsNearbyWithUserName:(NSString *)userName location:(CLLocationCoordinate2D)location distanceMin:(NSUInteger)distanceMin distanceMax:(NSUInteger)distanceMax page:(NSUInteger)page withDetail:(BOOL)withDetail type:(PIXAlbumElementType)type completion:(PIXHandlerCompletion)completion;
 /**
@@ -766,7 +733,7 @@
  *
  *  @param userName   相本擁有者，必要參數
  *  @param elementId  照片 ID，必要參數
- *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 NSError 物件裡
  */
 -(void)getElementWithUserName:(NSString *)userName elementID:(NSString *)elementId completion:(PIXHandlerCompletion)completion;
 
@@ -779,6 +746,7 @@
  *  @param elementDescription      照片(或影片)描述
  *  @param tags                    由 NSString instance 組成的 array
  *  @param location                照片(或影片)的經緯度，如不需要此參數，可使用 kCLLocationCoordinate2DInvalid
+ *  @param completion              succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 NSError 物件裡
  */
 -(void)createElementWithElementData:(NSData *)elementData setID:(NSString *)setId elementTitle:(NSString *)elementTitle elementDescription:(NSString *)elementDescription tags:(NSArray *)tags location:(CLLocationCoordinate2D)location completion:(PIXHandlerCompletion)completion;
 
@@ -792,14 +760,14 @@
  *  @param videoThumbType     影片截圖類型，如不設定請給 PIXVideoThumbTypeNone
  *  @param tags               由 NSString instance 組成的 array
  *  @param location           照片(或影片)的經緯度，如不需要此參數，可使用 kCLLocationCoordinate2DInvalid
- *  @param completion         succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion         succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 NSError 物件裡
  */
 -(void)updateElementWithElementID:(NSString *)elementId elementTitle:(NSString *)elementTitle elementDescription:(NSString *)elementDescription setID:(NSString *)setId videoThumbType:(PIXVideoThumbType)videoThumbType tags:(NSArray *)tags location:(CLLocationCoordinate2D)location completion:(PIXHandlerCompletion)completion;
 /**
  *  刪除單張圖片(或影片) http://developer.pixnet.pro/#!/doc/pixnetApi/albumElementsDelete
  *
  *  @param elementId  圖片(或影片)的 ID, 必要參數
- *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 NSError 物件裡
  */
 -(void)deleteElementWithElementID:(NSString *)elementId completion:(PIXHandlerCompletion)completion;
 /**
@@ -807,7 +775,7 @@
  *
  *  @param setId      相簿 ID，必要參數
  *  @param ids        圖片 ID, array 裡的值為 NSString, id 的順序即為圖片的新順序，必要參數
- *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 NSError 物件裡
  */
 -(void)sortElementsWithSetID:(NSString *)setId elementIDs:(NSArray *)ids completion:(PIXHandlerCompletion)completion;
 /**
@@ -817,7 +785,7 @@
  *  @param elementId  相片 ID，必要參數
  *  @param password   相片所屬相簿如果有密碼保護，就代入這個參數
  *  @param page       頁數
- *  @param completion succeed=YES 時 result 可以用(而 errorMessage 就會是 nil)，succeed=NO 時 result 會是 nil，而錯誤原因會在 errorMessage 裡
+ *  @param completion succeed=YES 時 result 可以用(而 errorMessage 就會是 nil)，succeed=NO 時 result 會是 nil，而錯誤原因會在 NSError 物件裡
  */
 -(void)getElementCommentsWithUserName:(NSString *)userName elementID:(NSString *)elementId password:(NSString *)password page:(NSUInteger)page completion:(PIXHandlerCompletion)completion;
 #pragma mark 留言
@@ -826,28 +794,28 @@
  *
  *  @param userName   相片或相簿的擁有者名稱，必要參數
  *  @param commentId  該則留言ID，必要參數
- *  @param completion succeed=YES 時 result 可以用(而 errorMessage 就會是 nil)，succeed=NO 時 result 會是 nil，而錯誤原因會在 errorMessage 裡
+ *  @param completion succeed=YES 時 result 可以用(而 errorMessage 就會是 nil)，succeed=NO 時 result 會是 nil，而錯誤原因會在 NSError 物件裡
  */
 -(void)getCommentWithUserName:(NSString *)userName commentID:(NSString *)commentId completion:(PIXHandlerCompletion)completion;
 /**
  *  將某則留言標記為廣告留言 http://developer.pixnet.pro/#!/doc/pixnetApi/albumCommentsMarkSpam
  *
  *  @param commentId  留言ID, 必要參數
- *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 NSError 物件裡
  */
 -(void)markCommentAsSpamWithCommentID:(NSString *)commentId completion:(PIXHandlerCompletion)completion;
 /**
  *  將某則留言標記為非廣告留言 http://developer.pixnet.pro/#!/doc/pixnetApi/albumCommentsMarkHam
  *
  *  @param commentId  留言ID, 必要參數
- *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 NSError 物件裡
  */
 -(void)markCommentAsHamWithCommentID:(NSString *)commentId completion:(PIXHandlerCompletion)completion;
 /**
  *  刪除某則留言 http://developer.pixnet.pro/#!/doc/pixnetApi/albumCommentsDelete
  *
  *  @param commentId  留言ID, 必要參數
- *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 NSError 物件裡
  */
 -(void)deleteCommentWithCommentID:(NSString *)commentId completion:(PIXHandlerCompletion)completion;
 /**
@@ -856,7 +824,7 @@
  *  @param elementId    要被標記的照片或影片ID，必要參數
  *  @param beTaggedUser 要更新標記的使用者帳號。被標記者必須設定標記者為好友，必要參數
  *  @param tagFrame     要被標記的範圍，必要參數
- *  @param completion   succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion   succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 NSError 物件裡
  */
 -(void)tagFriendWithElementID:(NSString *)elementId beTaggedUser:(NSString *)beTaggedUser tagFrame:(CGRect)tagFrame completion:(PIXHandlerCompletion)completion;
 /**
@@ -866,7 +834,7 @@
  *  @param elementId    相片或影像的 ID
  *  @param beTaggedUser 要更新標記的使用者帳號。被標記者必須設定標記者為好友。必要參數
  *  @param newTagFrame  人臉範圍，必要參數
- *  @param completion   succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion   succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 NSError 物件裡
  */
 -(void)updateTagedFaceWithFaceId:(NSString *)faceId
                        elementId:(NSString *)elementId
@@ -877,7 +845,7 @@
  *  刪除人臉標記 http://developer.pixnet.pro/#!/doc/pixnetApi/albumFacesDelete
  *
  *  @param faceId     要被刪除的人臉 id，必要參數
- *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param completion succeed=YES 時 result 可以用(errorMessage為 nil)，succeed=NO 時 result會是 nil，錯誤原因會在 NSError 物件裡
  */
 -(void)deleteTagWithFaceID:(NSString *)faceId completion:(PIXHandlerCompletion)completion;
 @end
