@@ -62,18 +62,18 @@
 - (void)createBlogCategoriesWithName:(NSString *)name
                                 type:(PIXBlogCategoryType)type
                          description:(NSString *)description
-                        siteCategory:(PIXSiteBlogCategory)siteCateID
+                        siteCategory:(NSString *)siteCateID
                           completion:(PIXHandlerCompletion)completion{
     [[PIXBlog new] createBlogCategoriesWithName:name type:type description:description siteCategory:siteCateID completion:completion];
 
 }
 
-- (void)updateBlogCategoriesFromID:(NSString *)categoriesID
+- (void)updateBlogCategoryFromID:(NSString *)categoryID
                            newName:(NSString *)newName
                               type:(PIXBlogCategoryType)type
                        description:(NSString *)description
                         completion:(PIXHandlerCompletion)completion{
-    [[PIXBlog new] updateBlogCategoriesFromID:categoriesID newName:newName type:type description:description completion:completion];
+    [[PIXBlog new] updateBlogCategoryFromID:categoryID newName:newName type:type description:description completion:completion];
 }
 
 - (void)deleteBlogCategoriesByID:(NSString *)categoriesID
@@ -97,7 +97,15 @@
                                   page:(NSUInteger)page
                                perpage:(NSUInteger)articlePerPage
                             completion:(PIXHandlerCompletion)completion{
-    [[PIXBlog new] getBlogAllArticlesWithUserName:userName password:passwd page:page perpage:articlePerPage completion:completion];
+    [[PIXBlog new] getBlogAllArticlesWithUserName:userName
+                                         password:passwd
+                                             page:page
+                                          perpage:20
+                                   userCategories:nil
+                                           status:PIXArticleStatusPublic
+                                            isTop:NO
+                                         trimUser:YES
+                                       completion:completion];
 }
 
 - (void)getBlogSingleArticleWithUserName:(NSString *)userName
@@ -112,7 +120,11 @@
                                 userName:(NSString *)userName
                             relatedLimit:(NSUInteger)limit
                               completion:(PIXHandlerCompletion)completion{
-    [[PIXBlog new] getBlogRelatedArticleByArticleID:articleID userName:userName relatedLimit:limit completion:completion];
+    [[PIXBlog new] getBlogRelatedArticleByArticleID:articleID
+                                           userName:userName
+                                           withBody:NO
+                                       relatedLimit:limit
+                                         completion:completion];
 }
 
 - (void)getBlogArticleCommentsWithUserName:(NSString *)userName
@@ -126,14 +138,19 @@
 }
 
 - (void)getBlogLatestArticleWithUserName:(NSString *)userName
+                            blogPassword:(NSString *)blogPassword
                               completion:(PIXHandlerCompletion)completion{
-    [[PIXBlog new] getBlogLatestCommentWithUserName:userName completion:completion];
+    [[PIXBlog new] getBlogLatestArticleWithUserName:userName
+                                       blogPassword:blogPassword
+                                              limit:20
+                                           trimUser:YES
+                                         completion:completion];
 }
 
 - (void)getBlogHotArticleWithUserName:(NSString *)userName
                              password:(NSString *)passwd
                            completion:(PIXHandlerCompletion)completion{
-    [[PIXBlog new] getBlogHotArticleWithUserName:userName password:passwd completion:completion];
+    [[PIXBlog new] getBlogHotArticleWithUserName:userName password:passwd limit:1 trimUser:YES completion:completion];
 }
 
 - (void)getblogSearchArticleWithKeyword:(NSString *)keyword
@@ -141,33 +158,29 @@
                                    page:(NSUInteger)page
                                 perPage:(NSUInteger)perPage
                              completion:(PIXHandlerCompletion)completion{
-    [[PIXBlog new] getblogSearchArticleWithKeyword:keyword userName:userName page:page perPage:perPage completion:completion];
+    [[PIXBlog new] getblogSearchArticleWithKeyword:keyword userName:userName searchType:PIXArticleSearchTypeKeyword page:page perPage:perPage completion:completion];
 }
 #pragma mark Article method need access token
 - (void)createBlogArticleWithTitle:(NSString *)title
                               body:(NSString *)body
-                            status:(PIXArticleStatus)status
-                          publicAt:(NSDate *)date
-                    siteCategoryID:(PIXSiteBlogCategory)cateID
-                       commentPerm:(PIXArticleCommentPerm)commentPerm
-                     commentHidden:(BOOL)commentHidden
-                              tags:(NSArray *)tagArray
-                          thumbURL:(NSString *)thumburl
-                          password:(NSString *)passwd
-                      passwordHine:(NSString *)passwdHint
-                     friendGroupID:(NSString *)friendGroupID
                         completion:(PIXHandlerCompletion)completion{
     [[PIXBlog new] createBlogArticleWithTitle:title
                                          body:body
                                        status:PIXArticleStatusPublic
-                               siteCategoryID:cateID
-                                  commentPerm:commentPerm
-                                commentHidden:commentHidden
-                                         tags:tagArray
-                                     thumbURL:thumburl
-                                     password:passwd
-                                 passwordHine:passwdHint
-                                friendGroupID:friendGroupID
+                                     publicAt:nil
+                               userCategoryID:nil
+                               siteCategoryID:nil
+                               useNewLineToBR:YES
+                                  commentPerm:PIXArticleCommentPermBlogConfig
+                                commentHidden:NO
+                                         tags:nil
+                                     thumbURL:nil
+                                    trackback:nil
+                                     password:nil
+                                 passwordHint:nil
+                                friendGroupID:nil
+                                notifyTwitter:-1
+                               notifyFacebook:-1
                                    completion:completion];
     
 }
@@ -177,27 +190,37 @@
                                   body:(NSString *)body
                                 status:(PIXArticleStatus)status
                               publicAt:(NSDate *)date
-                        siteCategoryID:(PIXSiteBlogCategory)cateID
+                        userCategoryID:(NSString *)userCategoryId
+                        siteCategoryID:(NSString *)cateID
                            commentPerm:(PIXArticleCommentPerm)commentPerm
                          commentHidden:(BOOL)commentHidden
                                   tags:(NSArray *)tagArray
                               thumbURL:(NSString *)thumburl
+                             trackback:(NSArray *)trackback
                               password:(NSString *)passwd
-                          passwordHine:(NSString *)passwdHint
+                          passwordHint:(NSString *)passwdHint
                          friendGroupID:(NSString *)friendGroupID
+                         notifyTwitter:(BOOL)notifyTwitter
+                        notifyFacebook:(BOOL)notifyFacebook
                             completion:(PIXHandlerCompletion)completion{
     [[PIXBlog new] updateBlogArticleWithArticleID:articleID
                                             title:title
                                              body:body
                                            status:status
+                                         publicAt:date
+                                   userCategoryID:userCategoryId
                                    siteCategoryID:cateID
+                                   useNewLineToBR:YES
                                       commentPerm:commentPerm
                                     commentHidden:commentHidden
                                              tags:tagArray
                                          thumbURL:thumburl
+                                        trackback:trackback
                                          password:passwd
-                                     passwordHine:passwdHint
+                                     passwordHint:passwdHint
                                     friendGroupID:friendGroupID
+                                    notifyTwitter:notifyTwitter
+                                   notifyFacebook:notifyFacebook
                                        completion:completion];
 }
 
@@ -213,7 +236,7 @@
                                page:(NSUInteger)page
                             perPage:(NSUInteger)perPage
                          completion:(PIXHandlerCompletion)completion{
-    [[PIXBlog new] getBlogCommentsWithUserName:userName articleID:articleID page:page perPage:perPage completion:completion];
+    [[PIXBlog new] getBlogCommentsWithUserName:userName articleID:articleID blogPassword:nil articlePassword:nil filter:PIXBlogCommentFilterTypeAll isSortAscending:YES page:1 perPage:10 completion:completion];
     
 }
 
@@ -358,7 +381,7 @@
     [[PIXAlbum new] getElementsNearbyWithUserName:userName location:location distanceMin:distanceMin distanceMax:distanceMax page:page perPage:100 withDetail:withDetail type:type trimUser:NO shouldAuth:NO completion:completion];
 }
 -(void)getElementWithUserName:(NSString *)userName elementID:(NSString *)elementId completion:(PIXHandlerCompletion)completion{
-    [[PIXAlbum new] getElementWithUserName:userName elementID:elementId completion:completion];
+    [[PIXAlbum new] getElementWithUserName:userName elementID:elementId withSetInfo:NO completion:completion];
 }
 -(void)updateElementWithElementID:(NSString *)elementId elementTitle:(NSString *)elementTitle elementDescription:(NSString *)elementDescription setID:(NSString *)setId videoThumbType:(PIXVideoThumbType)videoThumbType tags:(NSArray *)tags location:(CLLocationCoordinate2D)location completion:(PIXHandlerCompletion)completion{
     [[PIXAlbum new] updateElementWithElementID:elementId elementTitle:elementTitle elementDescription:elementDescription setID:setId videoThumbType:videoThumbType tags:tags location:location completion:completion];
@@ -384,8 +407,8 @@
 -(void)deleteCommentWithCommentID:(NSString *)commentId completion:(PIXHandlerCompletion)completion{
     [[PIXAlbum new] deleteCommentWithCommentID:commentId completion:completion];
 }
--(void)addElementWithElementData:(NSData *)elementData setID:(NSString *)setId elementTitle:(NSString *)elementTitle elementDescription:(NSString *)elementDescription tags:(NSArray *)tags location:(CLLocationCoordinate2D)location completion:(PIXHandlerCompletion)completion{
-    [[PIXAlbum new] addElementWithElementData:elementData setID:setId elementTitle:elementTitle elementDescription:elementDescription tags:tags location:location videoThumbType:PIXVideoThumbTypeEnd picShouldRotateByExif:YES videoShouldRotateByMeta:YES shouldUseQuadrate:YES shouldAddWatermark:YES isElementFirst:YES completion:completion];
+-(void)createElementWithElementData:(NSData *)elementData setID:(NSString *)setId elementTitle:(NSString *)elementTitle elementDescription:(NSString *)elementDescription tags:(NSArray *)tags location:(CLLocationCoordinate2D)location completion:(PIXHandlerCompletion)completion{
+    [[PIXAlbum new] createElementWithElementData:elementData setID:setId elementTitle:elementTitle elementDescription:elementDescription tags:tags location:location videoThumbType:PIXVideoThumbTypeEnd picShouldRotateByExif:YES videoShouldRotateByMeta:YES shouldUseQuadrate:YES shouldAddWatermark:YES isElementFirst:YES completion:completion];
 }
 -(void)tagFriendWithElementID:(NSString *)elementId beTaggedUser:(NSString *)beTaggedUser tagFrame:(CGRect)tagFrame completion:(PIXHandlerCompletion)completion{
     [[PIXAlbum new] tagFriendWithElementID:elementId beTaggedUser:beTaggedUser tagFrame:tagFrame recommendID:nil completion:completion];

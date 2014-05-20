@@ -26,8 +26,8 @@
 /**
  *  利用 XAuth 向 PIXNET 後台取得授權
  *
- *  @param userName   使用者名稱(帳號)
- *  @param password   使用者密碼
+ *  @param userName   使用者名稱(帳號)，必要參數
+ *  @param password   使用者密碼，必要參數
  *  @param completion succeed == YES 時，回傳 token; succeed == NO 時，則會回傳 errorMessage
  */
 +(void)authByXauthWithUserName:(NSString *)userName userPassword:(NSString *)password requestCompletion:(PIXHandlerCompletion)completion;
@@ -65,9 +65,9 @@
 #pragma mark - Blog Method
 #pragma mark - Blog information
 /**
- *  列出部落格資訊 http://emma.pixnet.cc/blog
+ *  列出部落格資訊 http://developer.pixnet.pro/#!/doc/pixnetApi/blog
  *
- *  @param userName   ＊指定要回傳的使用者資訊
+ *  @param userName   *指定要回傳的使用者資訊,必要參數
  *  @param completion succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 errorMessage 裡
  */
 - (void)getBlogInformationWithUserName:(NSString *)userName
@@ -76,7 +76,7 @@
 #pragma mark - Blog Categories
 //dosen't need Access token
 /**
- *  讀取使用者部落格分類資訊 http://emma.pixnet.cc/blog/categories
+ *  讀取使用者部落格分類資訊 http://developer.pixnet.pro/#!/doc/pixnetApi/blogCategories
  *
  *  @param userName   *指定要回傳的使用者資訊
  *  @param passwd     如果指定使用者的 Blog 被密碼保護，則需要指定這個參數以通過授權，沒有則輸入 nil
@@ -99,18 +99,18 @@
 - (void)createBlogCategoriesWithName:(NSString *)name
                                 type:(PIXBlogCategoryType)type
                          description:(NSString *)description
-                        siteCategory:(PIXSiteBlogCategory)siteCateID
+                        siteCategory:(NSString *)siteCateID
                           completion:(PIXHandlerCompletion)completion;
 /**
  *  修改部落格個人分類 (需認證) http://emma.pixnet.cc/blog/categories/:id
  *
- *  @param categoriesID *要修改的 Category / Folder ID
- *  @param newName      *修改後的顯示名稱
+ *  @param categoryID *要修改的 Category / Folder ID，必要參數
+ *  @param newName      *修改後的顯示名稱，必要參數
  *  @param type         要修改的類型是 Category / Folder
  *  @param description  修改後的分類說明
  *  @param completion   succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 errorMessage 裡
  */
-- (void)updateBlogCategoriesFromID:(NSString *)categoriesID
+- (void)updateBlogCategoryFromID:(NSString *)categoryID
                            newName:(NSString *)newName
                               type:(PIXBlogCategoryType)type
                        description:(NSString *)description
@@ -148,13 +148,13 @@
 #pragma mark - Blog Articles
 //dosen't need Access token
 /**
- *  列出部落格個人文章 http://emma.pixnet.cc/blog/articles
+ *  列出部落格個人文章 http://developer.pixnet.pro/#!/doc/pixnetApi/blogArticles
  *
- *  @param userName       ＊指定要回傳的使用者資訊
- *  @param passwd         如果指定使用者的 Blog 被密碼保護，則需要指定這個參數以通過授權，沒有則輸入 nil
- *  @param page           頁數, 預設為 1, 不需要則輸入 nil
- *  @param articlePerPage 每頁幾筆, 預設為 100, 不需要則輸入 nil
- *  @param completion     succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param userName       部落客 id，必要參數
+ *  @param passwd         如果指定使用者的 Blog 被密碼保護，則需要指定這個參數以通過授權
+ *  @param page           頁數
+ *  @param articlePerPage 每頁幾筆，建議使用20
+ *  @param completion     succeed = YES 時 result 可以用，succeed = NO 時 result 會是 nil，錯誤原因會在 NSError 物件中
  */
 - (void)getBlogAllArticlesWithUserName:(NSString *)userName
                               password:(NSString *)passwd
@@ -178,7 +178,7 @@
                               completion:(PIXHandlerCompletion)completion;
 
 /**
- *  讀取指定 ID 文章的相關文章 http://emma.pixnet.cc/blog/articles/:id/related
+ *  讀取指定 ID 文章的相關文章 http://developer.pixnet.pro/#!/doc/pixnetApi/blogArticlesIdRelated
  *
  *  @param articleID  ＊指定要回傳的文章ID
  *  @param userName   ＊指定要回傳的使用者
@@ -209,16 +209,18 @@
                            commentsPerPage:(NSUInteger)commentPerPage
                                 completion:(PIXHandlerCompletion)completion;
 /**
- *  列出部落格最新文章 http://emma.pixnet.cc/blog/articles/latest
+ *  列出部落格最新文章,預設會回傳20筆文章 http://developer.pixnet.pro/#!/doc/pixnetApi/blogArticlesLatest
  *
- *  @param userName   *指定要回傳的使用者資訊
- *  @param completion succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 errorMessage 裡
+ *  @param userName     *指定要回傳的使用者資訊
+ *  @param blogPassword 如果指定使用者的 Blog 被密碼保護，則需要指定這個參數以通過授權
+ *  @param completion   succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 errorMessage 裡
  */
 - (void)getBlogLatestArticleWithUserName:(NSString *)userName
+                            blogPassword:(NSString *)blogPassword
                               completion:(PIXHandlerCompletion)completion;
 
 /**
- *  列出部落格熱門文章 http://emma.pixnet.cc/blog/articles/hot
+ *  列出部落格熱門文章，預設會回傳1筆文章 http://developer.pixnet.pro/#!/doc/pixnetApi/blogArticlesHot
  *
  *  @param userName   *指定要回傳的使用者資訊
  *  @param passwd     如果指定使用者的 Blog 被密碼保護，則需要指定這個參數以通過授權，沒有則輸入 nil
@@ -274,16 +276,6 @@
  */
 - (void)createBlogArticleWithTitle:(NSString *)title
                               body:(NSString *)body
-                            status:(PIXArticleStatus)status
-                          publicAt:(NSDate *)date
-                    siteCategoryID:(PIXSiteBlogCategory)cateID
-                       commentPerm:(PIXArticleCommentPerm)commentPerm
-                     commentHidden:(BOOL)commentHidden
-                              tags:(NSArray *)tagArray
-                          thumbURL:(NSString *)thumburl
-                          password:(NSString *)passwd
-                      passwordHine:(NSString *)passwdHint
-                     friendGroupID:(NSString *)friendGroupID
                         completion:(PIXHandlerCompletion)completion;
 
 
@@ -324,14 +316,18 @@
                                   body:(NSString *)body
                                 status:(PIXArticleStatus)status
                               publicAt:(NSDate *)date
-                        siteCategoryID:(PIXSiteBlogCategory)cateID
+                        userCategoryID:(NSString *)userCategoryId
+                        siteCategoryID:(NSString *)cateID
                            commentPerm:(PIXArticleCommentPerm)commentPerm
                          commentHidden:(BOOL)commentHidden
                                   tags:(NSArray *)tagArray
                               thumbURL:(NSString *)thumburl
+                             trackback:(NSArray *)trackback
                               password:(NSString *)passwd
-                          passwordHine:(NSString *)passwdHint
+                          passwordHint:(NSString *)passwdHint
                          friendGroupID:(NSString *)friendGroupID
+                         notifyTwitter:(BOOL)notifyTwitter
+                        notifyFacebook:(BOOL)notifyFacebook
                             completion:(PIXHandlerCompletion)completion;
 
 /**
@@ -352,9 +348,9 @@
  *  列出部落格留言 http://emma.pixnet.cc/blog/comments
  *
  *  @param userName   *指定要回傳的使用者資訊
- *  @param articleID  *指定要回傳的留言文章
- *  @param page       頁數, 預設為 1, 不需要則輸入 nil
- *  @param perPage    每頁幾筆, 預設為 100, 不需要則輸入 nil
+ *  @param articleID  指定要回傳的留言文章
+ *  @param page       頁數
+ *  @param perPage    每頁幾筆
  *  @param completion succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 errorMessage 裡
  */
 - (void)getBlogCommentsWithUserName:(NSString *)userName
@@ -459,7 +455,7 @@
 #pragma mark - Site Blog Categories list
 
 /**
- *  列出部落格全站分類 http://emma.pixnet.cc/blog/site_categories
+ *  列出部落格全站分類 http://developer.pixnet.pro/#!/doc/pixnetApi/blogSiteCategories
  *
  *  @param group      當被設為 YES 或 true 時, 回傳資訊會以全站分類群組為分類，不需要則輸入 NO 或 false
  *  @param thumb      當被設為 YES 或 true 時, 回傳分類資訊會包含縮圖網址，不需要則輸入 NO 或 false
@@ -784,7 +780,7 @@
  *  @param tags                    由 NSString instance 組成的 array
  *  @param location                照片(或影片)的經緯度，如不需要此參數，可使用 kCLLocationCoordinate2DInvalid
  */
--(void)addElementWithElementData:(NSData *)elementData setID:(NSString *)setId elementTitle:(NSString *)elementTitle elementDescription:(NSString *)elementDescription tags:(NSArray *)tags location:(CLLocationCoordinate2D)location completion:(PIXHandlerCompletion)completion;
+-(void)createElementWithElementData:(NSData *)elementData setID:(NSString *)setId elementTitle:(NSString *)elementTitle elementDescription:(NSString *)elementDescription tags:(NSArray *)tags location:(CLLocationCoordinate2D)location completion:(PIXHandlerCompletion)completion;
 
 /**
  *  修改圖片(或影片)裡的參數 http://developer.pixnet.pro/#!/doc/pixnetApi/albumElementsUpdate

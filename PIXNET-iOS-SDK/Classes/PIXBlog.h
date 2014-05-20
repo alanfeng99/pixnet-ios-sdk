@@ -80,179 +80,48 @@ typedef NS_ENUM(NSInteger, PIXArticleCommentPerm){
     /**
      *  開放好友留言
      */
-    PIXArticleCommentPermFriend = 3
+    PIXArticleCommentPermFriend = 3,
+    /**
+     *  使用部落格全域設定
+     */
+    PIXArticleCommentPermBlogConfig = 4
 };
 /**
- *  PIXNET Blog 全站分類 ID 對照
+ *  部落格留言屬性
  */
-typedef NS_ENUM(NSInteger, PIXSiteBlogCategory){
+typedef NS_ENUM(NSInteger, PIXBlogCommentFilterType){
     /**
-     *  無分類
+     *  悄悄話留言
      */
-    PIXSiteBlogCategoryNone = 0,
+    PIXBlogCommentFilterTypeWhisper,
     /**
-     *  戀愛情事
+     *  非廣告留言
      */
-    PIXSiteBlogCategoryLove = 1,
+    PIXBlogCommentFilterTypeNoSpam,
     /**
-     *  心情日記
+     *  未回覆留言
      */
-    PIXSiteBlogCategoryDiary = 2,
+    PIXBlogCommentFilterTypeNoReply,
     /**
-     *  寵物日記
+     *  所有留言
      */
-    PIXSiteBlogCategoryPets = 3,
+    PIXBlogCommentFilterTypeAll
+};
+/**
+ *  部落格文章搜尋類型
+ */
+typedef NS_ENUM(NSInteger, PIXArticleSearchType){
     /**
-     *  結婚記錄
+     *  搜尋標的物為文章標籤
      */
-    PIXSiteBlogCategoryWeddings = 4,
+    PIXArticleSearchTypeTag,
     /**
-     *  生活綜合
+     *  搜尋標的物為全文
      */
-    PIXSiteBlogCategoryHome = 5,
-    /**
-     *  親子育兒
-     */
-    PIXSiteBlogCategoryKids = 6,
-    /**
-     *  校園生活
-     */
-    PIXSiteBlogCategorySchool = 7,
-    /**
-     *  進修深造
-     */
-    PIXSiteBlogCategoryStudy = 8,
-    /**
-     *  職場甘苦
-     */
-    PIXSiteBlogCategoryCareer = 9,
-    /**
-     *  圖文創作
-     */
-    PIXSiteBlogCategoryIllustrations = 10,
-    /**
-     *  漫畫塗鴉
-     */
-    PIXSiteBlogCategoryComics = 11,
-    /**
-     *  KUSO
-     */
-    PIXSiteBlogCategoryKuso = 12,
-    /**
-     *  小說連載
-     */
-    PIXSiteBlogCategoryFiction = 13,
-    /**
-     *  散文筆記
-     */
-    PIXSiteBlogCategoryProse = 14,
-    /**
-     *  攝影寫真
-     */
-    PIXSiteBlogCategoryPhotography = 15,
-    /**
-     *  視覺設計
-     */
-    PIXSiteBlogCategoryDesign = 16,
-    /**
-     *  藝文評論
-     */
-    PIXSiteBlogCategoryArts = 17,
-    /**
-     *  音樂評析
-     */
-    PIXSiteBlogCategoryMusic = 18,
-    /**
-     *  電影評論
-     */
-    PIXSiteBlogCategoryMovies = 19,
-    /**
-     *  收藏嗜好
-     */
-    PIXSiteBlogCategoryHobbies = 20,
-    /**
-     *  電玩動漫
-     */
-    PIXSiteBlogCategoryAnimation = 21,
-    /**
-     *  時尚流行
-     */
-    PIXSiteBlogCategoryFashion = 22,
-    /**
-     *  美容彩妝
-     */
-    PIXSiteBlogCategoryMakeup = 23,
-    /**
-     *  財經企管
-     */
-    PIXSiteBlogCategoryDigitalLife = 24,
-    /**
-     *  美味食記
-     */
-    PIXSiteBlogCategoryCuisine = 26,
-    /**
-     *  食譜分享
-     */
-    PIXSiteBlogCategoryRecipes = 27,
-    /**
-     *  國內旅遊
-     */
-    PIXSiteBlogCategoryTaiwanTravel = 28,
-    /**
-     *  國外旅遊
-     */
-    PIXSiteBlogCategoryWorldTravel = 29,
-    /**
-     *  偶像明星
-     */
-    PIXSiteBlogCategoryCelebrities = 30,
-    /**
-     *  視聽娛樂
-     */
-    PIXSiteBlogCategoryEntertainment = 31,
-    /**
-     *  運動體育
-     */
-    PIXSiteBlogCategorySport = 32,
-    /**
-     *  醫療保健
-     */
-    PIXSiteBlogCategoryMedicine = 33,
-    /**
-     *  星座算命
-     */
-    PIXSiteBlogCategoryAstrology = 34,
-    /**
-     *  心理測驗
-     */
-    PIXSiteBlogCategoryPsychology = 35,
-    /**
-     *  財經企管
-     */
-    PIXSiteBlogCategoryFinance = 36,
-    /**
-     *  政論人文
-     */
-    PIXSiteBlogCategoryCommentary = 38,
-    /**
-     *  宗教超自然
-     */
-    PIXSiteBlogCategorySupernatural = 41,
-    /**
-     *  汽機車
-     */
-    PIXSiteBlogCategoryAutomobiles = 42,
-    /**
-     *  裝璜設計
-     */
-    PIXSiteBlogCategoryDecorationDesign = 43,
-    /**
-     *  活動記錄
-     */
-    PIXSiteBlogCategoryActivityRecord = 44
+    PIXArticleSearchTypeKeyword
 };
 
-#pragma mark - Blog imformation
+#pragma mark - Blog information
 /**
  *  列出部落格資訊 http://emma.pixnet.cc/blog
  *
@@ -288,18 +157,18 @@ typedef NS_ENUM(NSInteger, PIXSiteBlogCategory){
 - (void)createBlogCategoriesWithName:(NSString *)name
                                 type:(PIXBlogCategoryType)type
                          description:(NSString *)description
-                        siteCategory:(PIXSiteBlogCategory)siteCateID
+                        siteCategory:(NSString *)siteCateID
                           completion:(PIXHandlerCompletion)completion;
 /**
- *  修改部落格個人分類 (需認證) http://emma.pixnet.cc/blog/categories/:id
+ *  修改部落格個人分類 (需認證) http://developer.pixnet.pro/#!/doc/pixnetApi/blogCategoriesUpdate
  *
- *  @param categoriesID ＊要修改的 Category / Folder ID
+ *  @param categoryID ＊要修改的 Category / Folder ID
  *  @param newName      ＊修改後的顯示名稱
  *  @param type         請輸入修改類型 PIXBlogCategoryType 型別, 輸入 nil 即預設為 Category
  *  @param description  修改後的分類說明
  *  @param completion   succeed = YES 時 result 可以用，succeed = NO 時 result 會是 nil，錯誤原因會在 NSError 物件中
  */
-- (void)updateBlogCategoriesFromID:(NSString *)categoriesID
+- (void)updateBlogCategoryFromID:(NSString *)categoryID
                            newName:(NSString *)newName
                               type:(PIXBlogCategoryType)type
                        description:(NSString *)description
@@ -317,9 +186,9 @@ typedef NS_ENUM(NSInteger, PIXSiteBlogCategory){
                       completion:(PIXHandlerCompletion)completion;
 
 /**
- *  修改部落格分類排序（需認證） http://emma.pixnet.cc/blog/categories/position
+ *  修改部落格分類排序（需認證） http://developer.pixnet.pro/#!/doc/pixnetApi/blogCategoriesPosition
  *
- *  @param categoriesIDArray ＊輸入以部落格分類ID組成已排序好的 Array，分類將會已陣列順序重新排序。放在越前面的表示圖片的順序越優先。不過在排序上分類資料夾的排序要優先於分類，所以對分類資料夾的排序指定只會影響資料夾群本身
+ *  @param categoriesIDArray ＊輸入以部落格分類ID組成已排序好的 Array(value 必為 NSString)，分類將會以陣列順序重新排序。放在越前面的表示圖片的順序越優先。不過在排序上分類資料夾的排序要優先於分類，所以對分類資料夾的排序指定只會影響資料夾群本身
  *  @param completion        succeed = YES 時 result 可以用，succeed = NO 時 result 會是 nil，錯誤原因會在 NSError 物件中
  */
 - (void)sortBlogCategoriesTo:(NSArray *)categoriesIDArray
@@ -328,22 +197,30 @@ typedef NS_ENUM(NSInteger, PIXSiteBlogCategory){
 #pragma mark - Blog Articles
 //dosen't need Access token
 /**
- *  列出部落格個人文章 http://emma.pixnet.cc/blog/articles
+ *  列出部落格個人文章 http://developer.pixnet.pro/#!/doc/pixnetApi/blogArticles
  *
- *  @param userName       ＊指定要回傳的使用者資訊
- *  @param passwd         如果指定使用者的 Blog 被密碼保護，則需要指定這個參數以通過授權，沒有則輸入 nil
- *  @param page           頁數, 預設為 1, 不需要則輸入 nil
- *  @param articlePerPage 每頁幾筆, 預設為 100, 不需要則輸入 nil
+ *  @param userName       部落客 id，必要參數
+ *  @param passwd         如果指定使用者的 Blog 被密碼保護，則需要指定這個參數以通過授權
+ *  @param page           頁數
+ *  @param articlePerPage 每頁幾筆，建議使用20
+ *  @param userCategories 個人自行定義的分類，最多10個，由 NSString 組成這個 NSArray
+ *  @param status         文章狀態，如不指定，請輸入-1
+ *  @param isTop          是否回傳置頂文章
+ *  @param trimUser       是否每篇文章都要回傳作者資訊，輸入 YES 就不回傳
  *  @param completion     succeed = YES 時 result 可以用，succeed = NO 時 result 會是 nil，錯誤原因會在 NSError 物件中
  */
 - (void)getBlogAllArticlesWithUserName:(NSString *)userName
                               password:(NSString *)passwd
                                   page:(NSUInteger)page
                                perpage:(NSUInteger)articlePerPage
+                        userCategories:(NSArray *)userCategories
+                                status:(PIXArticleStatus)status
+                                 isTop:(BOOL)isTop
+                              trimUser:(BOOL)trimUser
                             completion:(PIXHandlerCompletion)completion;
 
 /**
- *  讀取部落格個人文章 http://emma.pixnet.cc/blog/articles/:id
+ *  讀取部落格個人文章 http://developer.pixnet.pro/#!/doc/pixnetApi/blogArticlesId
  *
  *  @param userName      ＊指定要回傳的使用者資訊
  *  @param articleID     ＊指定要回傳的文章ID
@@ -358,15 +235,17 @@ typedef NS_ENUM(NSInteger, PIXSiteBlogCategory){
                               completion:(PIXHandlerCompletion)completion;
 
 /**
- *  讀取指定 ID 文章的相關文章 http://emma.pixnet.cc/blog/articles/:id/related
+ *  讀取指定 ID 文章的相關文章 http://developer.pixnet.pro/#!/doc/pixnetApi/blogArticlesIdRelated
  *
  *  @param articleID  ＊指定要回傳的文章ID
  *  @param userName   ＊指定要回傳的使用者
+ *  @param withBody   是否包含文章本文的內容
  *  @param limit      限制回傳文章的筆數，預設值為1，最大值為10, 不設定則輸入 nil
  *  @param completion succeed = YES 時 result 可以用，succeed = NO 時 result 會是 nil，錯誤原因會在 NSError 物件中
  */
 - (void)getBlogRelatedArticleByArticleID:(NSString *)articleID
                                 userName:(NSString *)userName
+                                withBody:(BOOL)withBody
                             relatedLimit:(NSUInteger)limit
                               completion:(PIXHandlerCompletion)completion;
 
@@ -389,36 +268,48 @@ typedef NS_ENUM(NSInteger, PIXSiteBlogCategory){
                          commentsPerPage:(NSUInteger)commentPerPage
                               completion:(PIXHandlerCompletion)completion;
 /**
- *  列出部落格最新文章 http://emma.pixnet.cc/blog/articles/latest
+ *  列出部落格最新文章 http://developer.pixnet.pro/#!/doc/pixnetApi/blogArticlesLatest
  *
- *  @param userName   ＊指定要回傳的使用者資訊
- *  @param completion succeed = YES 時 result 可以用，succeed = NO 時 result 會是 nil，錯誤原因會在 NSError 物件中
+ *  @param userName     ＊指定要回傳的使用者資訊
+ *  @param blogPassword 如果指定使用者的 Blog 被密碼保護，則需要指定這個參數以通過授權
+ *  @param limit        回傳筆數
+ *  @param trimUser     是否每篇文章都省略作者資訊
+ *  @param completion   succeed = YES 時 result 可以用，succeed = NO 時 result 會是 nil，錯誤原因會在 NSError 物件中
  */
 - (void)getBlogLatestArticleWithUserName:(NSString *)userName
+                            blogPassword:(NSString *)blogPassword
+                                   limit:(NSUInteger)limit
+                                trimUser:(BOOL)trimUser
                             completion:(PIXHandlerCompletion)completion;
 
 /**
- *  列出部落格熱門文章 http://emma.pixnet.cc/blog/articles/hot
+ *  列出部落格熱門文章 http://developer.pixnet.pro/#!/doc/pixnetApi/blogArticlesHot
  *
  *  @param userName   ＊指定要回傳的使用者資訊
  *  @param passwd     如果指定使用者的 Blog 被密碼保護，則需要指定這個參數以通過授權，沒有則輸入 nil
+ *  @param limit      回傳筆數
+ *  @param trimUser   是否每篇文章都省略作者資訊
  *  @param completion succeed = YES 時 result 可以用，succeed = NO 時 result 會是 nil，錯誤原因會在 NSError 物件中
  */
 - (void)getBlogHotArticleWithUserName:(NSString *)userName
                              password:(NSString *)passwd
+                                limit:(NSUInteger)limit
+                             trimUser:(BOOL)trimUser
                          completion:(PIXHandlerCompletion)completion;
 
 /**
- *  搜尋部落格個人文章 http://emma.pixnet.cc/blog/articles/search
+ *  搜尋部落格個人文章 http://developer.pixnet.pro/#!/doc/pixnetApi/blogArticlesSearch
  *
  *  @param keyword    ＊關鍵字或標籤
  *  @param userName   指定要回傳的使用者資訊，如輸入 nil 則搜尋全站
- *  @param page       頁數, 預設為 1, 不需要則輸入 nil
- *  @param perPage    每頁幾筆, 預設為 100, 不需要則輸入 nil
+ *  @param searchType 搜尋類型
+ *  @param page       頁數
+ *  @param perPage    每頁幾筆
  *  @param completion succeed = YES 時 result 可以用，succeed = NO 時 result 會是 nil，錯誤原因會在 NSError 物件中
  */
 - (void)getblogSearchArticleWithKeyword:(NSString *)keyword
                                userName:(NSString *)userName
+                             searchType:(PIXArticleSearchType)searchType
                                    page:(NSUInteger)page
                                 perPage:(NSUInteger)perPage
                              completion:(PIXHandlerCompletion)completion;
@@ -426,68 +317,90 @@ typedef NS_ENUM(NSInteger, PIXSiteBlogCategory){
 #pragma mark Article method need access token
 
 /**
- *  新增部落格個人文章（需認證）  http://emma.pixnet.cc/blog/articles
+ *  新增部落格個人文章（需認證）  http://developer.pixnet.pro/#!/doc/pixnetApi/blogArticlesCreate
  *
- *  @param title         ＊文章標題
- *  @param body          ＊文章內容
- *  @param status        文章狀態，使用 PIXArticleStatus 型別
- *  @param date          公開時間，這個表示文章的發表時間，預設為現在時間
- *  @param cateID        全站分類，使用 PIXSiteBlogCategory 型別
- *  @param commentPerm   可留言權限，使用 PIXArticleCommentPerm 型別
- *  @param commentHidden 預設留言狀態， Yes 為強制隱藏 NO 為顯示(公開)，預設為 NO 公開(顯示)
- *  @param tagArray      文章標籤
- *  @param thumburl      文章縮圖網址, 會影響 oEmbed 與 SNS (Twitter, Facebook, Plurk …) 抓到的縮圖
- *  @param passwd        當 status 被設定為 PIXArticleStatusPassword 時需要輸入這個參數以設定為此文章的密碼
- *  @param passwdHint    當 status 被設定為 PIXArticleStatusPassword 時需要輸入這個參數以設定為此文章的密碼提示
- *  @param friendGroupID 當 status 被設定為 PIXArticleStatusFriend 時可以輸入這個參數以設定此文章可閱讀的好友群組, 預設不輸入代表所有好友
- *  @param completion    succeed = YES 時 result 可以用，succeed = NO 時 result 會是 nil，錯誤原因會在 NSError 物件中
+ *  @param title          ＊文章標題
+ *  @param body           ＊文章內容
+ *  @param status         文章狀態，使用 PIXArticleStatus 型別
+ *  @param date           文章公開時間
+ *  @param userCategoryId 使用者自訂的類別 id。使用者自訂的類別，可透過 -(void)getBlogCategoriesWithUserName:password:completion: 取得
+ *  @param cateID         全站分類的該類別 id，全站的部落格類別，可透過 -(void)getBlogCategoriesListIncludeGroups:thumbs:completion: 取得
+ *  @param useNewLineToBR  是否要將 \n 轉為 <BR>
+ *  @param commentPerm    可留言權限，使用 PIXArticleCommentPerm 型別
+ *  @param commentHidden  預設留言狀態， Yes 為強制隱藏 NO 為顯示(公開)，建議使用 NO (顯示)
+ *  @param tagArray       文章標籤，內容的值必為 NSString 物件
+ *  @param thumburl       文章縮圖網址, 會影響 oEmbed 與 SNS (Twitter, Facebook, Plurk …) 抓到的縮圖
+ *  @param trackback      這篇文章引用了哪些網頁，內容的值必為 NSString 物件
+ *  @param passwd         當 status 被設定為 PIXArticleStatusPassword 時需要輸入這個參數以設定為此文章的密碼
+ *  @param passwdHint     當 status 被設定為 PIXArticleStatusPassword 時需要輸入這個參數以設定為此文章的密碼提示
+ *  @param friendGroupID  當 status 被設定為 PIXArticleStatusFriend 時可以輸入這個參數以設定此文章可閱讀的好友群組, 預設不輸入代表所有好友
+ *  @param notifyTwitter  動態發送至 Twitter. 必須先有同步關係才能發送, 預設為部落格全域設定。部落格全域設定可透過 -(void)getBlogInformationWithUserName:completion: 取得。
+ *  @param notifyFacebook 動態發送至 Facebook. 必須先有同步關係才能發送, 預設為部落格全域設定。部落格全域設定可透過 -(void)getBlogInformationWithUserName:completion: 取得。
+ *  @param completion     succeed = YES 時 result 可以用，succeed = NO 時 result 會是 nil，錯誤原因會在 NSError 物件中
  */
 - (void)createBlogArticleWithTitle:(NSString *)title
                               body:(NSString *)body
                             status:(PIXArticleStatus)status
-                    siteCategoryID:(PIXSiteBlogCategory)cateID
+                          publicAt:(NSDate *)date
+                    userCategoryID:(NSString *)userCategoryId
+                    siteCategoryID:(NSString *)cateID
+                         useNewLineToBR:(BOOL)useNewLineToBR
                        commentPerm:(PIXArticleCommentPerm)commentPerm
                      commentHidden:(BOOL)commentHidden
                               tags:(NSArray *)tagArray
                           thumbURL:(NSString *)thumburl
+                         trackback:(NSArray *)trackback
                           password:(NSString *)passwd
-                      passwordHine:(NSString *)passwdHint
+                      passwordHint:(NSString *)passwdHint
                      friendGroupID:(NSString *)friendGroupID
+                     notifyTwitter:(BOOL)notifyTwitter
+                    notifyFacebook:(BOOL)notifyFacebook
                         completion:(PIXHandlerCompletion)completion;
 /**
- *  修改部落格個人文章（需認證） http://emma.pixnet.cc/blog/articles/:id
+ *  修改部落格個人文章(需認證) http://developer.pixnet.pro/#!/doc/pixnetApi/blogArticlesUpdate
  *
- *  @param articleID     ＊要修改的文章 ID
- *  @param title         ＊修改後的文章標題
- *  @param body          ＊修改後的文章內容
- *  @param status        文章狀態，使用 PIXArticleStatus 型別
- *  @param date          公開時間，這個表示文章的發表時間，預設為現在時間
- *  @param cateID        全站分類，使用 PIXSiteBlogCategory 型別
- *  @param commentPerm   可留言權限，使用 PIXArticleCommentPerm 型別
- *  @param commentHidden 預設留言狀態， Yes 為強制隱藏 NO 為顯示(公開)，預設為 NO 公開(顯示)
- *  @param tagArray      文章標籤
- *  @param thumburl      文章縮圖網址, 會影響 oEmbed 與 SNS (Twitter, Facebook, Plurk …) 抓到的縮圖
- *  @param passwd        當 status 被設定為 PIXArticleStatusPassword 時需要輸入這個參數以設定為此文章的密碼
- *  @param passwdHint    當 status 被設定為 PIXArticleStatusPassword 時需要輸入這個參數以設定為此文章的密碼提示
- *  @param friendGroupID 當 status 被設定為 PIXArticleStatusFriend 時可以輸入這個參數以設定此文章可閱讀的好友群組, 預設不輸入代表所有好友
- *  @param completion    succeed = YES 時 result 可以用，succeed = NO 時 result 會是 nil，錯誤原因會在 NSError 物件中
+ *  @param articleID      要修改的文章的 id, 必要欄位
+ *  @param title          文章標題
+ *  @param body           文章內文
+ *  @param status         文章狀態
+ *  @param date           文章的發表時間
+ *  @param userCategoryId 使用者自訂的類別 id。使用者自訂的類別，可透過 -(void)getBlogCategoriesWithUserName:password:completion: 取得
+ *  @param cateID         全站分類 id
+ *  @param useNewLineToBR 是否要將 /n 轉成 <BR>
+ *  @param commentPerm    全站分類的該類別 id，全站的部落格類別，可透過 -(void)getBlogCategoriesListIncludeGroups:thumbs:completion: 取得
+ *  @param commentHidden  是否將留言公開
+ *  @param tagArray       標籤
+ *  @param thumburl       文章縮圖網址, 會影響 oEmbed 與 SNS (Twitter, Facebook, Plurk …) 抓到的縮圖
+ *  @param trackback      發送引用通知, 可以輸入複數網站
+ *  @param passwd         當 status 被設定為 PIXArticleStatusPassword 時需要輸入這個參數以設定為此文章的密碼
+ *  @param passwdHint     當 status 被設定為 PIXArticleStatusPassword 時需要輸入這個參數以設定為此文章的密碼提示
+ *  @param friendGroupID  當 status 被設定為 PIXArticleStatusFriend 時可以輸入這個參數以設定此文章可閱讀的好友群組
+ *  @param notifyTwitter  是否動態發送至 Twitter. 必須先有同步關係才能發送
+ *  @param notifyFacebook 動態發送至 Facebook. 必須先有同步關係才能發送
+ *  @param completion     succeed = YES 時 result 可以用，succeed = NO 時 result 會是 nil，錯誤原因會在 NSError 物件中
  */
 - (void)updateBlogArticleWithArticleID:(NSString *)articleID
                                  title:(NSString *)title
                                   body:(NSString *)body
                                 status:(PIXArticleStatus)status
-                        siteCategoryID:(PIXSiteBlogCategory)cateID
+                              publicAt:(NSDate *)date
+                        userCategoryID:(NSString *)userCategoryId
+                        siteCategoryID:(NSString *)cateID
+                        useNewLineToBR:(BOOL)useNewLineToBR
                            commentPerm:(PIXArticleCommentPerm)commentPerm
                          commentHidden:(BOOL)commentHidden
                                   tags:(NSArray *)tagArray
                               thumbURL:(NSString *)thumburl
+                             trackback:(NSArray *)trackback
                               password:(NSString *)passwd
-                          passwordHine:(NSString *)passwdHint
+                          passwordHint:(NSString *)passwdHint
                          friendGroupID:(NSString *)friendGroupID
+                         notifyTwitter:(BOOL)notifyTwitter
+                        notifyFacebook:(BOOL)notifyFacebook
                             completion:(PIXHandlerCompletion)completion;
 
 /**
- *  刪除部落格個人文章（需認證） http://emma.pixnet.cc/blog/articles/:id
+ *  刪除部落格個人文章（需認證） http://developer.pixnet.pro/#!/doc/pixnetApi/blogCategoriesDelete
  *
  *  @param articleID  ＊要刪除的文章 ID
  *  @param completion succeed = YES 時 result 可以用，succeed = NO 時 result 會是 nil，錯誤原因會在 NSError 物件中
@@ -497,24 +410,31 @@ typedef NS_ENUM(NSInteger, PIXSiteBlogCategory){
 
 
 #pragma mark - Blog Comments
-
 /**
- *  列出部落格留言 http://emma.pixnet.cc/blog/comments
+ *  列出部落格留言 http://developer.pixnet.pro/#!/doc/pixnetApi/blogComments
  *
- *  @param userName   ＊指定要回傳的使用者資訊
- *  @param articleID  ＊指定要回傳的留言文章
- *  @param page       頁數, 預設為 1, 不需要則輸入 nil
- *  @param perPage    每頁幾筆, 預設為 100, 不需要則輸入 nil
- *  @param completion succeed = YES 時 result 可以用，succeed = NO 時 result 會是 nil，錯誤原因會在 NSError 物件中
+ *  @param userName        部落客 id, 必要欄位
+ *  @param articleID       文章 id, 必要欄位
+ *  @param blogPassword    如果指定使用者的 Blog 被密碼保護，則需要指定這個參數以通過授權
+ *  @param articlePassword 如果指定使用者的文章被密碼保護，則需要指定這個參數以通過授權
+ *  @param filter          顯示特別屬性的留言
+ *  @param isSortAscending 是否依照留言時間做舊到新的排序
+ *  @param page            頁數
+ *  @param perPage         每頁幾筆
+ *  @param completion      succeed = YES 時 result 可以用，succeed = NO 時 result 會是 nil，錯誤原因會在 NSError 物件中
  */
 - (void)getBlogCommentsWithUserName:(NSString *)userName
                           articleID:(NSString *)articleID
+                       blogPassword:(NSString *)blogPassword
+                    articlePassword:(NSString *)articlePassword
+                             filter:(PIXBlogCommentFilterType)filter
+                    isSortAscending:(BOOL)isSortAscending
                                page:(NSUInteger)page
                             perPage:(NSUInteger)perPage
                          completion:(PIXHandlerCompletion)completion;
 
 /**
- *  讀取單一留言 http://emma.pixnet.cc/blog/comments/:id
+ *  讀取單一留言 http://developer.pixnet.pro/#!/doc/pixnetApi/blogCommentsId
  *
  *  @param userName   ＊指定要回傳的使用者資訊
  *  @param commentID  ＊指定要回傳的留言ID
@@ -526,7 +446,7 @@ typedef NS_ENUM(NSInteger, PIXSiteBlogCategory){
 
 
 /**
- *  列出部落格最新留言 http://emma.pixnet.cc/blog/comments/latest
+ *  列出部落格最新留言 http://developer.pixnet.pro/#!/doc/pixnetApi/blogCommentsLatest
  *
  *  @param userName   ＊指定要回傳的使用者資訊
  *  @param completion succeed = YES 時 result 可以用 (errorMessage == nil)，succeed = NO 時 result 會是 nil，錯誤原因會在 errorMessage 裡
@@ -537,15 +457,15 @@ typedef NS_ENUM(NSInteger, PIXSiteBlogCategory){
 
 #pragma mark Comment method need access token
 /**
- *  新增部落格留言（需認證） http://emma.pixnet.cc/blog/comments
+ *  新增部落格留言（需認證） http://developer.pixnet.pro/#!/doc/pixnetApi/blogCommentsCreate
  *
  *  @param articleID     ＊要留言的文章 ID
  *  @param body          ＊留言內容
- *  @param userName      要留言的部落格作者名稱, 若不填入則預設找自己的文章
+ *  @param userName      ＊要被留言的部落格作者名稱
  *  @param author        留言的暱稱, 不填入則預設代入認證使用者的 display_name
  *  @param title         留言標題
  *  @param url           個人網頁
- *  @param isOpen        公開留言/悄悄話
+ *  @param isOpen        是否為公開留言
  *  @param email         電子郵件
  *  @param blogPasswd    如果指定使用者的 Blog 被密碼保護，則需要指定這個參數以通過授權
  *  @param articlePasswd 如果指定使用者的文章被密碼保護，則需要指定這個參數以通過授權
@@ -563,7 +483,7 @@ typedef NS_ENUM(NSInteger, PIXSiteBlogCategory){
                        articlePassword:(NSString *)articlePasswd
                             completion:(PIXHandlerCompletion)completion;
 /**
- *  回覆部落格留言，可以重覆使用這個功能來修改回覆內容（需認證） http://emma.pixnet.cc/blog/comments/:id/reply
+ *  回覆部落格留言，可以重覆使用這個功能來修改回覆內容（需認證） http://developer.pixnet.pro/#!/doc/pixnetApi/blogCommentsReply
  *
  *  @param commentID  ＊要回覆/修改的留言 ID
  *  @param body       ＊留言內容/修改後的內容
@@ -574,7 +494,9 @@ typedef NS_ENUM(NSInteger, PIXSiteBlogCategory){
                            completion:(PIXHandlerCompletion)completion;
 
 /**
- *  將留言設為公開/關閉（需認證） http://emma.pixnet.cc/blog/comments/:id/open http://emma.pixnet.cc/blog/comments/:id/close
+ *  將留言設為公開/關閉（需認證） 
+ *  http://developer.pixnet.pro/#!/doc/pixnetApi/blogCommentsOpen
+ *  http://developer.pixnet.pro/#!/doc/pixnetApi/blogCommentsClose
  *
  *  @param commentID  ＊要公開/關閉的留言 ID
  *  @param isOpen     ＊YES 為 公開， NO 為 關閉 該則留言
@@ -585,7 +507,9 @@ typedef NS_ENUM(NSInteger, PIXSiteBlogCategory){
                                 completion:(PIXHandlerCompletion)completion;
 
 /**
- *  將留言設為廣告留言/非廣告留言（需認證） http://emma.pixnet.cc/blog/comments/:id/mark_spam http://emma.pixnet.cc/blog/comments/:id/mark_ham
+ *  將留言設為廣告留言/非廣告留言（需認證
+ *  http://developer.pixnet.pro/#!/doc/pixnetApi/blogCommentsMarkSpam
+ *  http://developer.pixnet.pro/#!/doc/pixnetApi/blogCommentsMarkHam
  *
  *  @param commentID  ＊要公開/關閉的留言 ID
  *  @param isSpam     ＊YES 為設成廣告留言， NO 為設成非廣告留言
@@ -608,7 +532,7 @@ typedef NS_ENUM(NSInteger, PIXSiteBlogCategory){
 #pragma mark - Site Blog Categories list
 
 /**
- *  列出部落格全站分類 http://emma.pixnet.cc/blog/site_categories
+ *  列出部落格全站分類 http://developer.pixnet.pro/#!/doc/pixnetApi/blogSiteCategories
  *
  *  @param group      當被設為 YES 或 true 時, 回傳資訊會以全站分類群組為分類，不需要則輸入 NO 或 false
  *  @param thumb      當被設為 YES 或 true 時, 回傳分類資訊會包含縮圖網址，不需要則輸入 NO 或 false
