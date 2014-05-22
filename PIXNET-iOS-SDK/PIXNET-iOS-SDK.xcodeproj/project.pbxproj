@@ -34,6 +34,7 @@
 		CED461A11910D4A0003A96C2 /* NSArray+PIXCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = CED4619E1910D4A0003A96C2 /* NSArray+PIXCategory.m */; };
 		CED461A21910D4A0003A96C2 /* NSDictionary+PIXCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = CED461A01910D4A0003A96C2 /* NSDictionary+PIXCategory.m */; };
 		CED461A51910D4C7003A96C2 /* UserForTest.m in Sources */ = {isa = PBXBuildFile; fileRef = CED461A41910D4C7003A96C2 /* UserForTest.m */; };
+		CED789EC192D9798001DC7EE /* PIXURLSessionDelegateHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = CED789EB192D9798001DC7EE /* PIXURLSessionDelegateHandler.m */; };
 		CED9CC7518DC379C00D37BA1 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CED9CC7418DC379C00D37BA1 /* CoreLocation.framework */; };
 		CEDB7C7A18D2ECF700D14D0C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEDB7C7918D2ECF700D14D0C /* Foundation.framework */; };
 		CEDB7C7C18D2ECF700D14D0C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEDB7C7B18D2ECF700D14D0C /* CoreGraphics.framework */; };
@@ -46,6 +47,7 @@
 		CEDB7C9418D2ECF700D14D0C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEDB7C7918D2ECF700D14D0C /* Foundation.framework */; };
 		CEDB7C9518D2ECF700D14D0C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEDB7C7D18D2ECF700D14D0C /* UIKit.framework */; };
 		CEDB7C9D18D2ECF700D14D0C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = CEDB7C9B18D2ECF700D14D0C /* InfoPlist.strings */; };
+		CEDBFB88192B076B004CA3E0 /* BackgroundUploadTest.m in Sources */ = {isa = PBXBuildFile; fileRef = CEDBFB87192B076B004CA3E0 /* BackgroundUploadTest.m */; };
 		CEDCD0E918F3ABF700B32ACC /* PIXNETSDK.m in Sources */ = {isa = PBXBuildFile; fileRef = CEDCD0E818F3ABF700B32ACC /* PIXNETSDK.m */; };
 		CEDCD0EE18F3AC5400B32ACC /* PIXAlbum.m in Sources */ = {isa = PBXBuildFile; fileRef = CEDCD0EB18F3AC5400B32ACC /* PIXAlbum.m */; };
 		CEDCD0EF18F3AC5400B32ACC /* PIXBlog.m in Sources */ = {isa = PBXBuildFile; fileRef = CEDCD0ED18F3AC5400B32ACC /* PIXBlog.m */; };
@@ -93,6 +95,8 @@
 		CED461A01910D4A0003A96C2 /* NSDictionary+PIXCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSDictionary+PIXCategory.m"; path = "Classes/NSDictionary+PIXCategory.m"; sourceTree = "<group>"; };
 		CED461A31910D4C7003A96C2 /* UserForTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserForTest.h; sourceTree = "<group>"; };
 		CED461A41910D4C7003A96C2 /* UserForTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserForTest.m; sourceTree = "<group>"; };
+		CED789EA192D9798001DC7EE /* PIXURLSessionDelegateHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PIXURLSessionDelegateHandler.h; path = Classes/PIXURLSessionDelegateHandler.h; sourceTree = "<group>"; };
+		CED789EB192D9798001DC7EE /* PIXURLSessionDelegateHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PIXURLSessionDelegateHandler.m; path = Classes/PIXURLSessionDelegateHandler.m; sourceTree = "<group>"; };
 		CED9CC7418DC379C00D37BA1 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		CEDB7C7618D2ECF700D14D0C /* PIXNET-iOS-SDK.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "PIXNET-iOS-SDK.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEDB7C7918D2ECF700D14D0C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -109,6 +113,7 @@
 		CEDB7C9218D2ECF700D14D0C /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		CEDB7C9A18D2ECF700D14D0C /* PIXNET-iOS-SDKTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PIXNET-iOS-SDKTests-Info.plist"; sourceTree = "<group>"; };
 		CEDB7C9C18D2ECF700D14D0C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		CEDBFB87192B076B004CA3E0 /* BackgroundUploadTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BackgroundUploadTest.m; sourceTree = "<group>"; };
 		CEDCD0E718F3ABF700B32ACC /* PIXNETSDK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PIXNETSDK.h; path = Classes/PIXNETSDK.h; sourceTree = "<group>"; };
 		CEDCD0E818F3ABF700B32ACC /* PIXNETSDK.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PIXNETSDK.m; path = Classes/PIXNETSDK.m; sourceTree = "<group>"; };
 		CEDCD0EA18F3AC5400B32ACC /* PIXAlbum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PIXAlbum.h; path = Classes/PIXAlbum.h; sourceTree = "<group>"; };
@@ -219,6 +224,7 @@
 				CED461A31910D4C7003A96C2 /* UserForTest.h */,
 				CED461A41910D4C7003A96C2 /* UserForTest.m */,
 				CE3A34DF18FE53770039A1BC /* PIXCategoryTests.m */,
+				CEDBFB87192B076B004CA3E0 /* BackgroundUploadTest.m */,
 				CEE68D8A18FF6A64004AE5FC /* PIXAlbumTests.m */,
 				CEECBD6A1917340B00CC98C4 /* PIXBlogTests.m */,
 				CED461591910C1CD003A96C2 /* pixFox.jpg */,
@@ -251,6 +257,8 @@
 		CEDB7CB218D2F82300D14D0C /* NetworkHandle */ = {
 			isa = PBXGroup;
 			children = (
+				CED789EA192D9798001DC7EE /* PIXURLSessionDelegateHandler.h */,
+				CED789EB192D9798001DC7EE /* PIXURLSessionDelegateHandler.m */,
 				CED4619D1910D4A0003A96C2 /* NSArray+PIXCategory.h */,
 				CED4619E1910D4A0003A96C2 /* NSArray+PIXCategory.m */,
 				CED4619F1910D4A0003A96C2 /* NSDictionary+PIXCategory.h */,
@@ -438,6 +446,7 @@
 			files = (
 				CE46038218F6767600A3BF84 /* NSObject+PIXCategory.m in Sources */,
 				CEDCD0FE18F3AD6800B32ACC /* PIXCredentialStorage.m in Sources */,
+				CED789EC192D9798001DC7EE /* PIXURLSessionDelegateHandler.m in Sources */,
 				CEDB7C8A18D2ECF700D14D0C /* AppDelegate.m in Sources */,
 				CEDCD0EF18F3AC5400B32ACC /* PIXBlog.m in Sources */,
 				CEDCD0E918F3ABF700B32ACC /* PIXNETSDK.m in Sources */,
@@ -466,6 +475,7 @@
 				CE3A34E318FE56760039A1BC /* PIXTestObjectGenerator.m in Sources */,
 				CE3A34E018FE53770039A1BC /* PIXCategoryTests.m in Sources */,
 				CEE68D8B18FF6A64004AE5FC /* PIXAlbumTests.m in Sources */,
+				CEDBFB88192B076B004CA3E0 /* BackgroundUploadTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
