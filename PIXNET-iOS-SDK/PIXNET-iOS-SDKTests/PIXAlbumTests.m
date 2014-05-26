@@ -141,7 +141,26 @@ static NSString *kSetComment = @"Unit test comment in set";
     //刪除資料夾
     [self deleteFolder:folderId];
 
-
+    //刪除所有測試所產生的相簿
+    [self deleteAllTestAlbums];
+    //刪除所有測試所產生的資料夾
+    [self deleteAllTestFolders];
+}
+-(void)deleteAllTestFolders{
+    NSArray *allFolders = [self getAlbumFolders];
+    for (NSDictionary *folder in allFolders) {
+        if ([folder[@"title"] isEqualToString:@"folder title updated"] && [folder[@"total_children_sets"] intValue]==0) {
+            [self deleteFolder:folder[@"id"]];
+        }
+    }
+}
+-(void)deleteAllTestAlbums{
+    NSArray *allAlbums = [self getAlbumSets];
+    for (NSDictionary *album in allAlbums) {
+        if ([album[@"title"] isEqualToString:kSetTitle] && [album[@"total_elements"] intValue]==0) {
+            [self deleteAlbum:album[@"id"]];
+        }
+    }
 }
 -(void)getAlbumSiteCategories{
     __block BOOL done = NO;
