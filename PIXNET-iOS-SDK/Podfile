@@ -4,6 +4,7 @@ platform :ios, "6.0"
 #pod 'AFXAuthClient', '~> 1.1'
 pod 'cocoa-oauth', '~> 0.0.1'
 pod 'RPJSONValidator', '~> 0.1.2'
+pod 'OAuthConsumer', :git=>'https://github.com/dolphinSuPixnet/OAuthConsumer.git', :tag=>'1.0'
 
 #target :PIXNET-iOS-SDKTests, :exclusive => true do
 #  pod 'Kiwi', '~> 2.2.3'
