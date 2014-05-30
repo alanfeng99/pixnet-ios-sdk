@@ -168,7 +168,6 @@
     }
     
     params[@"_method"] = @"delete";
-    NSLog(@"delete category: %@", params);
     
     [[PIXAPIHandler new] callAPI:[NSString stringWithFormat:@"blog/categories/%@", categoriesID]
                       httpMethod:@"POST"

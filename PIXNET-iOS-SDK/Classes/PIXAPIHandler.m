@@ -11,9 +11,11 @@ static const NSString *kConsumerSecret;
 
 #import "PIXAPIHandler.h"
 #import <GCOAuth.h>
-#import "NSMutableURLRequest+PIXCategory.h"
+//#import "NSMutableURLRequest+PIXCategory.h"
+#import <OAuthConsumer.h>
 #import "PIXCredentialStorage.h"
 #import "NSError+PIXCategory.h"
+#import "PIXURLSessionDelegateHandler.h"
 
 static const NSString *kApiURLPrefix = @"https://emma.pixnet.cc/";
 static const NSString *kApiURLHost = @"emma.pixnet.cc";
@@ -140,15 +142,46 @@ static const NSString *kOauthTokenSecretIdentifier = @"kOauthTokenSecretIdentifi
     
     NSURL *requestUrl = [NSURL URLWithString:urlString];
     
-    NSMutableURLRequest *urlRequest = [self requestWithURL:requestUrl apiPath:apiPath shouldAuth:shouldAuth httpMethod:httpMethod parameters:parameters];
-    if (uploadData) {
-        [urlRequest PIXAttachData:uploadData];
-    }
-    
+    id urlRequest = [self requestWithURL:requestUrl apiPath:apiPath shouldAuth:shouldAuth httpMethod:httpMethod parameters:parameters uploadData:uploadData];
     if (backgroundExec) {
         //這裡要用 NSURLSession
+#warning NSMutableURLRequest 不能設定 Authorization 的 header，所以無法實作 NSURLSession 裡的 oauth 連線！
+        NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration backgroundSessionConfiguration:@"PIXBackgroundSession"];
+        NSString *filePathDirectory = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).lastObject;
+        NSString *filePath = [NSString stringWithFormat:@"%@/%@", filePathDirectory, @"PIXUploadingFile"];
+        if ([uploadData writeToFile:filePath atomically:YES]) {
+            PIXURLSessionDelegateHandler *delegateHandler = [[PIXURLSessionDelegateHandler alloc] initWithFilePath:filePath completion:completion];
+            NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration delegate:delegateHandler delegateQueue:[NSOperationQueue mainQueue]];
+            
+            OAMutableURLRequest *aRequest = (OAMutableURLRequest *)urlRequest;
+            NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:aRequest.URL];
+            [request setAllHTTPHeaderFields:aRequest.allHTTPHeaderFields];
+            [request setHTTPBody:aRequest.HTTPBody];
+            [request setHTTPMethod:aRequest.HTTPMethod];
+            [request setHTTPBodyStream:aRequest.HTTPBodyStream];
+            [request setCachePolicy:aRequest.cachePolicy];
+            [request setNetworkServiceType:aRequest.networkServiceType];
+            [request setTimeoutInterval:aRequest.timeoutInterval];
+            [request setAllowsCellularAccess:aRequest.allowsCellularAccess];
+            [request setHTTPShouldUsePipelining:aRequest.HTTPShouldUsePipelining];
+            [request setHTTPShouldHandleCookies:aRequest.HTTPShouldHandleCookies];
+            [request setMainDocumentURL:aRequest.mainDocumentURL];
+            NSLog(@"background exec http headers: %@", [request allHTTPHeaderFields]);
+
+            NSURLSessionUploadTask *task = [session uploadTaskWithRequest:request fromFile:[NSURL fileURLWithPath:filePath]];
+//            NSURLSessionDownloadTask *task = [session downloadTaskWithRequest:request];
+            [task resume];
+        } else {  //檔案寫入 local 端失敗
+            completion(NO, nil, [NSError PIXErrorWithParameterName:@"檔案寫入 local 端失敗"]);
+        }
     } else {
         //這裡可以用 NSURLConnection
+        NSURLRequest *request = (NSURLRequest *)urlRequest;
+        if (request) {
+            if ([[request valueForHTTPHeaderField:@"Content-Type"] hasPrefix:@"multipart/form-data"]) {
+                NSLog(@"http headers: %@", [request allHTTPHeaderFields]);
+            }
+        }
         [NSURLConnection sendAsynchronousRequest:urlRequest queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (connectionError == nil) {
@@ -175,10 +208,30 @@ static const NSString *kOauthTokenSecretIdentifier = @"kOauthTokenSecretIdentifi
         
     }
 }
--(NSMutableURLRequest *)requestWithURL:(NSURL *)url apiPath:(NSString *)path shouldAuth:(BOOL)auth httpMethod:(NSString *)httpMethod parameters:(NSDictionary *)parameters{
-    NSMutableURLRequest *request = nil;
+-(NSMutableURLRequest *)requestWithURL:(NSURL *)url apiPath:(NSString *)path shouldAuth:(BOOL)auth httpMethod:(NSString *)httpMethod parameters:(NSDictionary *)parameters uploadData:(NSData *)uploadData{
+    id request = nil;
     if (auth) {
-        request = [PIXAPIHandler requestForXAuthWithPath:path parameters:parameters httpMethod:(NSString *)httpMethod];
+        OAConsumer *consumer = [[OAConsumer alloc] initWithKey:[kConsumerKey copy] secret:[kConsumerSecret copy]];
+        NSString *tokenKey = [[PIXCredentialStorage sharedInstance] stringForIdentifier:[kOauthTokenIdentifier copy]];
+        NSString *tokenSecret = [[PIXCredentialStorage sharedInstance] stringForIdentifier:[kOauthTokenSecretIdentifier copy]];
+        OAToken *token = [[OAToken alloc] initWithKey:tokenKey secret:tokenSecret];
+        request = [[OAMutableURLRequest alloc] initWithURL:url consumer:consumer token:token realm:nil signatureProvider:nil];
+        [request setHTTPMethod:httpMethod];
+
+        if (parameters) {
+            NSMutableArray *array = [NSMutableArray arrayWithCapacity:[parameters count]];
+            for (NSString *key in [parameters allKeys]) {
+                [array addObject:[OARequestParameter requestParameter:key value:parameters[key]]];
+            }
+            [request setParameters:array];
+        }
+        
+
+        [request prepare];
+        if (uploadData) {
+            [request attachFileWithName:@"upload_file" filename:@"PIXUploadingFile.dat" contentType:@"application/x-octetstream" data:uploadData];
+        }
+
     } else {
         request = [NSMutableURLRequest requestWithURL:url];
         if (![httpMethod isEqualToString:@"GET"]) {

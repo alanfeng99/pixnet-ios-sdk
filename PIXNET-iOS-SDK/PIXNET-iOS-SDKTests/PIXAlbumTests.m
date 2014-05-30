@@ -105,37 +105,46 @@ static NSString *kSetComment = @"Unit test comment in set";
     [self markCommentInSetAsHam:commentId];
     //取得相簿裡所有留言
     [self getAlbumSetComments:albumSetId];
+
+    //新增一張照片
+    NSString *elementId = [self addElementInAlbum:albumSetId];
     //將相簿移到 folder 底下
     [self removeSet:albumSetId toFolder:folderId];
     
-    //新增一張照片
-    NSString *elementId = [self addElementInAlbum:albumSetId];
-    //修改相片
-    [self updateElement:elementId];
-
-    //新增相片留言
-    NSString *elementCommentId = [self createElementComment:elementId];
-    //讀取相片裡所有留言
-    [self getElementComments:elementId];
-    //將相片裡的留言設為廣告
-    [self markElementCommentAsSpam:elementCommentId];
-    //將相片裡的留言設為非廣告
-    [self markElementCommentAsHam:elementCommentId];
+    if (elementId) {
+        //修改相片
+        [self updateElement:elementId];
+        
+        //新增相片留言
+        NSString *elementCommentId = [self createElementComment:elementId];
+        //讀取相片裡所有留言
+        [self getElementComments:elementId];
+        //將相片裡的留言設為廣告
+        [self markElementCommentAsSpam:elementCommentId];
+        //將相片裡的留言設為非廣告
+        [self markElementCommentAsHam:elementCommentId];
+        
+        //新增人臉標記
+        NSString *faceId = [self tagFaceOnElement:elementId];
+        //更新人臉標記
+        [self updateFace:faceId element:elementId];
+        
+        //讀取單一照片
+        [self getElement:elementId];
+        
+        //刪除人臉標記
+        [self deleteFace:faceId];
+        //刪除相片裡的留言
+        [self deleteElementComment:elementCommentId];
+        //刪除相片
+        [self deleteElement:elementId];
+    }
+    //利用背景上傳的方式新增照片
+    NSString *backgroundElementId = [self addElementInBackgroundInAlbum:albumSetId];
+    if (backgroundElementId) {
+        [self deleteElement:backgroundElementId];
+    }
     
-    //新增人臉標記
-    NSString *faceId = [self tagFaceOnElement:elementId];
-    //更新人臉標記
-    [self updateFace:faceId element:elementId];
-    
-    //讀取單一照片
-    [self getElement:elementId];
-    
-    //刪除人臉標記
-    [self deleteFace:faceId];
-    //刪除相片裡的留言
-    [self deleteElementComment:elementCommentId];
-    //刪除相片
-    [self deleteElement:elementId];
     //刪除相簿
     [self deleteAlbum:albumSetId];
     //刪除資料夾
@@ -374,6 +383,41 @@ static NSString *kSetComment = @"Unit test comment in set";
     }
     return;
 }
+/**
+ *  背景上傳圖片測試
+ */
+-(NSString *)addElementInBackgroundInAlbum:(NSString *)albumId{
+    __block BOOL done = NO;
+    __block NSString *elementId = nil;
+    UIImage *image = [UIImage imageNamed:@"pixFox.jpg"];
+    NSData *data = UIImageJPEGRepresentation(image, 0.7);
+    [[PIXAlbum new] createElementWithElementData:data setID:albumId elementTitle:@"unit test photo title" elementDescription:@"unit test photo description" tags:nil location:kCLLocationCoordinate2DInvalid videoThumbType:PIXVideoThumbTypeEnd picShouldRotateByExif:YES videoShouldRotateByMeta:YES shouldUseQuadrate:YES shouldAddWatermark:YES isElementFirst:YES willResumeUploadingInBackground:YES completion:^(BOOL succeed, id result, NSError *error) {
+        if (succeed) {
+            NSLog(@"add element in background succeed: %@", result);
+            elementId = result[@"element"][@"id"];
+        } else {
+            XCTFail(@"add element in background failed: %@", error);
+        }
+        done = YES;
+    }];
+//    [[PIXAlbum new] createElementWithElementData:data setID:albumId elementTitle:@"unit test photo title" elementDescription:@"unit test photo description" tags:nil location:kCLLocationCoordinate2DInvalid videoThumbType:PIXVideoThumbTypeNone picShouldRotateByExif:YES videoShouldRotateByMeta:YES shouldUseQuadrate:YES shouldAddWatermark:NO isElementFirst:YES willResumeUploadingInBackground:YES completion:^(BOOL succeed, id result, NSError *error) {
+//        if (succeed) {
+//            NSLog(@"add element in background succeed: %@", result);
+//            elementId = result[@"element"][@"id"];
+//        } else {
+//            XCTFail(@"add element in background failed: %@", error);
+//        }
+//        done = YES;
+//    }];
+    
+    while (!done) {
+        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
+    }
+    return elementId;
+}
+/**
+ *  不可背景上傳圖片
+ */
 -(NSString *)addElementInAlbum:(NSString *)albumId{
     __block BOOL done = NO;
     __block NSString *elementId = nil;
@@ -381,10 +425,9 @@ static NSString *kSetComment = @"Unit test comment in set";
     NSData *data = UIImageJPEGRepresentation(image, 0.7);
     [[PIXNETSDK new] createElementWithElementData:data setID:albumId elementTitle:@"unit test photo title" elementDescription:@"unit test photo description" tags:nil location:kCLLocationCoordinate2DInvalid completion:^(BOOL succeed, id result, NSError *error) {
         if (succeed) {
-            NSLog(@"add element succeed: %@", result);
             elementId = result[@"element"][@"id"];
         } else {
-            XCTFail(@"mark comment in set as ham failed: %@", error);
+            XCTFail(@"add element failed: %@", error);
         }
         done = YES;
     }];
@@ -580,7 +623,7 @@ static NSString *kSetComment = @"Unit test comment in set";
     [[PIXNETSDK new] getAlbumSetCommentsWithUserName:_testUser.userName setID:setId password:nil page:1 completion:^(BOOL succeed, id result, NSError *error) {
         if (succeed) {
             array = result[@"comments"];
-            NSLog(@"album set comments count: %lu in album set: %@\n", (unsigned long)array.count, setId);
+//            NSLog(@"album set comments count: %lu in album set: %@\n", (unsigned long)array.count, setId);
         } else {
             XCTFail(@"get comments in album set failed: %@\n", error);
         }

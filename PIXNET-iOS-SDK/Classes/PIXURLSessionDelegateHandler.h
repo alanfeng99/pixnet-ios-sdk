@@ -9,6 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "PIXAPIHandler.h"
 
-@interface PIXURLSessionDelegateHandler : NSObject<NSURLSessionDelegate, NSURLSessionDataDelegate>
+@interface PIXURLSessionDelegateHandler : NSObject<NSURLSessionDelegate, NSURLSessionDataDelegate, NSURLSessionTaskDelegate>
 -(instancetype)initWithFilePath:(NSString *)filePath completion:(PIXHandlerCompletion)completion;
 @end
